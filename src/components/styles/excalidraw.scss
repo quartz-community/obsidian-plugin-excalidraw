@@ -361,6 +361,9 @@
   flex-direction: column;
   background: var(--light);
   box-sizing: border-box;
+  pointer-events: auto;
+  cursor: default;
+  user-select: text;
 }
 
 .excalidraw-embed-header {
@@ -389,6 +392,7 @@
   line-height: 1.5;
   color: var(--darkgray);
   background: var(--light);
+  overscroll-behavior: contain;
 }
 
 .excalidraw-embed-open-link {
@@ -428,6 +432,7 @@
   flex: 1;
   width: 100%;
   border: none;
+  pointer-events: auto;
 }
 
 // Transclude embed overrides

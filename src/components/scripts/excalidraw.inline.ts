@@ -51,14 +51,20 @@ function initPanZoom(page) {
   }
 
   function isInsideEmbed(target) {
+    if (!target) return false;
     let el = target;
     while (el && el !== container) {
-      if (el.classList && (el.classList.contains("excalidraw-embed-note") || el.classList.contains("excalidraw-embed-url"))) {
-        return true;
-      }
-      el = el.parentElement;
+      if (el.tagName === "foreignObject" || el.tagName === "FOREIGNOBJECT") return true;
+      if (el.classList && (el.classList.contains("excalidraw-embed-note") || el.classList.contains("excalidraw-embed-url"))) return true;
+      el = el.parentElement || el.parentNode;
     }
     return false;
+  }
+
+  var embeds = container.querySelectorAll(".excalidraw-embed-note, .excalidraw-embed-url");
+  for (var i = 0; i < embeds.length; i++) {
+    embeds[i].addEventListener("wheel", function(e) { e.stopPropagation(); }, { passive: true });
+    embeds[i].addEventListener("mousedown", function(e) { e.stopPropagation(); });
   }
 
   function handleWheel(e) {

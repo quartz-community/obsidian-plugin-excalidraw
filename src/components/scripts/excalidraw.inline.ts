@@ -62,9 +62,9 @@ function initPanZoom(page) {
     var containerW = rect.width;
     var containerH = rect.height;
 
-    var svgScale = Math.min(containerW / vbW, containerH / vbH) * zoom;
-    var svgOffsetX = (containerW - vbW * svgScale / zoom) / 2 + panX;
-    var svgOffsetY = (containerH - vbH * svgScale / zoom) / 2 + panY;
+    var baseScale = Math.min(containerW / vbW, containerH / vbH);
+    var baseCenterX = (containerW - vbW * baseScale) / 2;
+    var baseCenterY = (containerH - vbH * baseScale) / 2;
 
     for (var i = 0; i < overlays.length; i++) {
       var el = overlays[i];
@@ -73,15 +73,15 @@ function initPanZoom(page) {
       var ew = parseFloat(el.getAttribute("data-w")) || 0;
       var eh = parseFloat(el.getAttribute("data-h")) || 0;
 
-      var left = svgOffsetX + (ex + offX) * svgScale;
-      var top = svgOffsetY + (ey + offY) * svgScale;
-      var width = ew * svgScale;
-      var height = eh * svgScale;
+      var baseLeft = baseCenterX + (ex + offX) * baseScale;
+      var baseTop = baseCenterY + (ey + offY) * baseScale;
+      var baseWidth = ew * baseScale;
+      var baseHeight = eh * baseScale;
 
-      el.style.left = left + "px";
-      el.style.top = top + "px";
-      el.style.width = width + "px";
-      el.style.height = height + "px";
+      el.style.left = (baseLeft * zoom + panX) + "px";
+      el.style.top = (baseTop * zoom + panY) + "px";
+      el.style.width = (baseWidth * zoom) + "px";
+      el.style.height = (baseHeight * zoom) + "px";
       el.style.display = "flex";
     }
   }

@@ -14,6 +14,10 @@ npx quartz plugin add github:quartz-community/obsidian-plugin-excalidraw
 plugins:
   - source: github:quartz-community/obsidian-plugin-excalidraw
     enabled: true
+    options:
+      enableInteraction: true
+      darkMode: "auto"
+      exportPadding: 20
 ```
 
 For advanced use cases, you can override in TypeScript:

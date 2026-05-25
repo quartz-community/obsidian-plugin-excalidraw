@@ -102,71 +102,71 @@
 }
 
 :root[saved-theme="dark"] {
-  --excalidraw-fg: #f1f1f1;
-  --excalidraw-bg: #111111;
-  --excalidraw-color-1e1e1e: #f1f1f1;
-  --excalidraw-color-000000: #eeeeee;
-  --excalidraw-color-ffffff: #111111;
-  --excalidraw-color-343a40: #d0ccc8;
-  --excalidraw-color-868e96: #7f776f;
-  --excalidraw-color-ced4da: #373128;
-  --excalidraw-color-e9ecef: #1e1914;
-  --excalidraw-color-f8f9fa: #0f0b07;
-  --excalidraw-color-e03131: #25d4d4;
-  --excalidraw-color-fa5252: #0db3b3;
-  --excalidraw-color-ff8787: #0e7e7e;
-  --excalidraw-color-ffc9c9: #0a3c3c;
-  --excalidraw-color-fff5f5: #020e0e;
-  --excalidraw-color-c2255c: #44dfa8;
-  --excalidraw-color-e64980: #20bb84;
-  --excalidraw-color-f783ac: #146057;
-  --excalidraw-color-fcc2d7: #0b412d;
-  --excalidraw-color-fff0f6: #03130d;
-  --excalidraw-color-9c36b5: #69ce50;
-  --excalidraw-color-be4bdb: #47b929;
-  --excalidraw-color-da77f2: #2b8d12;
-  --excalidraw-color-eebefa: #175008;
-  --excalidraw-color-f8f0fc: #0b1305;
-  --excalidraw-color-6741d9: #9dc32b;
-  --excalidraw-color-7950f2: #8bb412;
-  --excalidraw-color-9775fa: #6d8f09;
-  --excalidraw-color-d0bfff: #344504;
-  --excalidraw-color-f3f0ff: #101202;
-  --excalidraw-color-1971c2: #eb9342;
-  --excalidraw-color-228be6: #e2791e;
-  --excalidraw-color-4dabf7: #b7580c;
-  --excalidraw-color-a5d8ff: #5f2b04;
-  --excalidraw-color-e7f5ff: #1c0d02;
-  --excalidraw-color-0c8599: #f87f6c;
-  --excalidraw-color-15aabf: #ef5a45;
-  --excalidraw-color-3bc9db: #c83a29;
-  --excalidraw-color-99e9f2: #6b1a11;
-  --excalidraw-color-e3fafc: #200806;
-  --excalidraw-color-099268: #fb729d;
-  --excalidraw-color-12b886: #f24c7e;
-  --excalidraw-color-38d9a9: #cb2a5b;
-  --excalidraw-color-96f2d7: #6e112c;
-  --excalidraw-color-e6fcf5: #1d050e;
-  --excalidraw-color-2f9e44: #d566c0;
-  --excalidraw-color-40c057: #c444ad;
-  --excalidraw-color-69db7c: #9a2988;
-  --excalidraw-color-b2f2bb: #511249;
-  --excalidraw-color-ebfbee: #180716;
-  --excalidraw-color-f08c00: #1478ff;
-  --excalidraw-color-fab005: #094fff;
-  --excalidraw-color-ffd43b: #002fc8;
-  --excalidraw-color-ffec99: #00176a;
-  --excalidraw-color-fff9db: #000928;
-  --excalidraw-color-e8590c: #1caaf8;
-  --excalidraw-color-fd7e14: #0786f0;
-  --excalidraw-color-ffa94d: #045ab7;
-  --excalidraw-color-ffd8a8: #022b5b;
-  --excalidraw-color-fff4e6: #010d1d;
-  --excalidraw-color-846358: #80a1ab;
-  --excalidraw-color-a18072: #638491;
-  --excalidraw-color-d2bab0: #314953;
-  --excalidraw-color-eaddd7: #192629;
-  --excalidraw-color-f8f1ee: #0b1214;
+  --excalidraw-fg: #d3d3d3;
+  --excalidraw-bg: #121212;
+  --excalidraw-color-1e1e1e: #d3d3d3;
+  --excalidraw-color-000000: #ededed;
+  --excalidraw-color-ffffff: #121212;
+  --excalidraw-color-343a40: #b7bcc1;
+  --excalidraw-color-868e96: #6e757c;
+  --excalidraw-color-ced4da: #33383d;
+  --excalidraw-color-e9ecef: #202325;
+  --excalidraw-color-f8f9fa: #161718;
+  --excalidraw-color-e03131: #ff8383;
+  --excalidraw-color-fa5252: #fa6969;
+  --excalidraw-color-ff8787: #b44d4d;
+  --excalidraw-color-ffc9c9: #5a2c2c;
+  --excalidraw-color-fff5f5: #1f1717;
+  --excalidraw-color-c2255c: #ff8dbc;
+  --excalidraw-color-e64980: #f56e9d;
+  --excalidraw-color-f783ac: #b04d70;
+  --excalidraw-color-fcc2d7: #602e40;
+  --excalidraw-color-fff0f6: #26191e;
+  --excalidraw-color-9c36b5: #e28af8;
+  --excalidraw-color-be4bdb: #d471ed;
+  --excalidraw-color-da77f2: #a954be;
+  --excalidraw-color-eebefa: #5b3165;
+  --excalidraw-color-f8f0fc: #211a25;
+  --excalidraw-color-6741d9: #b595ff;
+  --excalidraw-color-7950f2: #a885ff;
+  --excalidraw-color-9775fa: #8a6cdf;
+  --excalidraw-color-d0bfff: #4a3b72;
+  --excalidraw-color-f3f0ff: #1f1c29;
+  --excalidraw-color-1971c2: #56a2e8;
+  --excalidraw-color-228be6: #3791e0;
+  --excalidraw-color-4dabf7: #2273b4;
+  --excalidraw-color-a5d8ff: #154162;
+  --excalidraw-color-e7f5ff: #121e26;
+  --excalidraw-color-0c8599: #3da5b6;
+  --excalidraw-color-15aabf: #0f8fa1;
+  --excalidraw-color-3bc9db: #007281;
+  --excalidraw-color-99e9f2: #004149;
+  --excalidraw-color-e3fafc: #0a1e20;
+  --excalidraw-color-099268: #32a783;
+  --excalidraw-color-12b886: #039267;
+  --excalidraw-color-38d9a9: #00744b;
+  --excalidraw-color-96f2d7: #00422b;
+  --excalidraw-color-e6fcf5: #0a1d17;
+  --excalidraw-color-2f9e44: #39994b;
+  --excalidraw-color-40c057: #16842a;
+  --excalidraw-color-69db7c: #056715;
+  --excalidraw-color-b2f2bb: #043b0c;
+  --excalidraw-color-ebfbee: #0f1d12;
+  --excalidraw-color-f08c00: #b86200;
+  --excalidraw-color-fab005: #905000;
+  --excalidraw-color-ffd43b: #5f3a00;
+  --excalidraw-color-ffec99: #362600;
+  --excalidraw-color-fff9db: #1e1900;
+  --excalidraw-color-e8590c: #f17634;
+  --excalidraw-color-fd7e14: #cd6005;
+  --excalidraw-color-ffa94d: #924800;
+  --excalidraw-color-ffd8a8: #4c2b01;
+  --excalidraw-color-fff4e6: #22190d;
+  --excalidraw-color-846358: #a98d84;
+  --excalidraw-color-a18072: #917569;
+  --excalidraw-color-d2bab0: #5a463d;
+  --excalidraw-color-eaddd7: #362b26;
+  --excalidraw-color-f8f1ee: #221c1a;
 }
 
 // Zoom controls
@@ -404,6 +404,15 @@
   font-size: 12px;
   line-height: 1.5;
   color: var(--dark);
+
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 1em;
+    margin: 0.5em 0 0.25em;
+
+    &[id] > a[href^="#"] {
+      display: none;
+    }
+  }
 }
 
 .excalidraw-embed-missing {

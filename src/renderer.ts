@@ -25,10 +25,15 @@ export interface ResolvedEmbed {
   href: string;
 }
 
+export interface RenderContext {
+  resolvedEmbeds?: Record<string, ResolvedEmbed>;
+  resolvedImages?: Record<string, string>;
+}
+
 export function renderToSvg(
   data: ExcalidrawData,
   opts: ExcalidrawPageOptions = {},
-  resolvedEmbeds?: Record<string, ResolvedEmbed>,
+  ctx?: RenderContext,
 ): string {
   const elements = data.elements.filter((el) => !el.isDeleted);
   if (elements.length === 0) {
@@ -45,7 +50,7 @@ export function renderToSvg(
   const bgColor = resolveBgColor(data, opts);
 
   const renderedElements = elements
-    .map((el) => renderElement(el, data, resolvedEmbeds))
+    .map((el) => renderElement(el, data, ctx))
     .filter(Boolean);
 
   const parts = [
@@ -76,9 +81,9 @@ function resolveBgColor(data: ExcalidrawData, opts: ExcalidrawPageOptions): stri
 function renderElement(
   el: ExcalidrawElement,
   data: ExcalidrawData,
-  resolvedEmbeds?: Record<string, ResolvedEmbed>,
+  ctx?: RenderContext,
 ): string {
-  const inner = renderElementInner(el, data, resolvedEmbeds);
+  const inner = renderElementInner(el, data, ctx);
   if (!inner) return "";
 
   const attrs: string[] = [];
@@ -101,7 +106,7 @@ function renderElement(
 function renderElementInner(
   el: ExcalidrawElement,
   data: ExcalidrawData,
-  resolvedEmbeds?: Record<string, ResolvedEmbed>,
+  ctx?: RenderContext,
 ): string {
   switch (el.type) {
     case "rectangle":
@@ -118,13 +123,13 @@ function renderElementInner(
     case "freedraw":
       return renderFreedraw(el);
     case "image":
-      return renderImage(el, data);
+      return renderImage(el, data, ctx);
     case "frame":
     case "magicframe":
       return renderFrame(el);
     case "embeddable":
     case "iframe":
-      return renderEmbeddable(el, resolvedEmbeds);
+      return renderEmbeddable(el, ctx?.resolvedEmbeds);
     default:
       return "";
   }
@@ -134,69 +139,69 @@ function renderElementInner(
 // Pre-computed dark variants for all default palette colors.
 // Light → Dark mappings generated from Excalidraw's applyDarkModeFilter algorithm.
 const DARK_MODE_MAP: Record<string, string> = {
-  "#1e1e1e": "#f1f1f1",
-  "#000000": "#eeeeee",
-  "#343a40": "#d0ccc8",
-  "#868e96": "#7f776f",
-  "#ced4da": "#373128",
-  "#e9ecef": "#1e1914",
-  "#f8f9fa": "#0f0b07",
-  "#e03131": "#25d4d4",
-  "#fa5252": "#0db3b3",
-  "#ff8787": "#0e7e7e",
-  "#ffc9c9": "#0a3c3c",
-  "#fff5f5": "#020e0e",
-  "#c2255c": "#44dfa8",
-  "#e64980": "#20bb84",
-  "#f783ac": "#146057",
-  "#fcc2d7": "#0b412d",
-  "#fff0f6": "#03130d",
-  "#9c36b5": "#69ce50",
-  "#be4bdb": "#47b929",
-  "#da77f2": "#2b8d12",
-  "#eebefa": "#175008",
-  "#f8f0fc": "#0b1305",
-  "#6741d9": "#9dc32b",
-  "#7950f2": "#8bb412",
-  "#9775fa": "#6d8f09",
-  "#d0bfff": "#344504",
-  "#f3f0ff": "#101202",
-  "#1971c2": "#eb9342",
-  "#228be6": "#e2791e",
-  "#4dabf7": "#b7580c",
-  "#a5d8ff": "#5f2b04",
-  "#e7f5ff": "#1c0d02",
-  "#0c8599": "#f87f6c",
-  "#15aabf": "#ef5a45",
-  "#3bc9db": "#c83a29",
-  "#99e9f2": "#6b1a11",
-  "#e3fafc": "#200806",
-  "#099268": "#fb729d",
-  "#12b886": "#f24c7e",
-  "#38d9a9": "#cb2a5b",
-  "#96f2d7": "#6e112c",
-  "#e6fcf5": "#1d050e",
-  "#2f9e44": "#d566c0",
-  "#40c057": "#c444ad",
-  "#69db7c": "#9a2988",
-  "#b2f2bb": "#511249",
-  "#ebfbee": "#180716",
-  "#f08c00": "#1478ff",
-  "#fab005": "#094fff",
-  "#ffd43b": "#002fc8",
-  "#ffec99": "#00176a",
-  "#fff9db": "#000928",
-  "#e8590c": "#1caaf8",
-  "#fd7e14": "#0786f0",
-  "#ffa94d": "#045ab7",
-  "#ffd8a8": "#022b5b",
-  "#fff4e6": "#010d1d",
-  "#846358": "#80a1ab",
-  "#a18072": "#638491",
-  "#d2bab0": "#314953",
-  "#eaddd7": "#192629",
-  "#f8f1ee": "#0b1214",
-  "#ffffff": "#111111",
+  "#1e1e1e": "#d3d3d3",
+  "#000000": "#ededed",
+  "#343a40": "#b7bcc1",
+  "#868e96": "#6e757c",
+  "#ced4da": "#33383d",
+  "#e9ecef": "#202325",
+  "#f8f9fa": "#161718",
+  "#e03131": "#ff8383",
+  "#fa5252": "#fa6969",
+  "#ff8787": "#b44d4d",
+  "#ffc9c9": "#5a2c2c",
+  "#fff5f5": "#1f1717",
+  "#c2255c": "#ff8dbc",
+  "#e64980": "#f56e9d",
+  "#f783ac": "#b04d70",
+  "#fcc2d7": "#602e40",
+  "#fff0f6": "#26191e",
+  "#9c36b5": "#e28af8",
+  "#be4bdb": "#d471ed",
+  "#da77f2": "#a954be",
+  "#eebefa": "#5b3165",
+  "#f8f0fc": "#211a25",
+  "#6741d9": "#b595ff",
+  "#7950f2": "#a885ff",
+  "#9775fa": "#8a6cdf",
+  "#d0bfff": "#4a3b72",
+  "#f3f0ff": "#1f1c29",
+  "#1971c2": "#56a2e8",
+  "#228be6": "#3791e0",
+  "#4dabf7": "#2273b4",
+  "#a5d8ff": "#154162",
+  "#e7f5ff": "#121e26",
+  "#0c8599": "#3da5b6",
+  "#15aabf": "#0f8fa1",
+  "#3bc9db": "#007281",
+  "#99e9f2": "#004149",
+  "#e3fafc": "#0a1e20",
+  "#099268": "#32a783",
+  "#12b886": "#039267",
+  "#38d9a9": "#00744b",
+  "#96f2d7": "#00422b",
+  "#e6fcf5": "#0a1d17",
+  "#2f9e44": "#39994b",
+  "#40c057": "#16842a",
+  "#69db7c": "#056715",
+  "#b2f2bb": "#043b0c",
+  "#ebfbee": "#0f1d12",
+  "#f08c00": "#b86200",
+  "#fab005": "#905000",
+  "#ffd43b": "#5f3a00",
+  "#ffec99": "#362600",
+  "#fff9db": "#1e1900",
+  "#e8590c": "#f17634",
+  "#fd7e14": "#cd6005",
+  "#ffa94d": "#924800",
+  "#ffd8a8": "#4c2b01",
+  "#fff4e6": "#22190d",
+  "#846358": "#a98d84",
+  "#a18072": "#917569",
+  "#d2bab0": "#5a463d",
+  "#eaddd7": "#362b26",
+  "#f8f1ee": "#221c1a",
+  "#ffffff": "#121212",
 };
 
 function themeColor(color: string): string {
@@ -436,13 +441,20 @@ function getSvgPathFromStroke(points: number[][]): string {
   return d;
 }
 
-function renderImage(el: ExcalidrawElement, data: ExcalidrawData): string {
+function renderImage(el: ExcalidrawElement, data: ExcalidrawData, ctx?: RenderContext): string {
   if (!el.fileId) return "";
 
   const file = data.files[el.fileId];
-  if (!file || !file.dataURL) return "";
+  if (file?.dataURL) {
+    return `<image x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" href="${escapeAttr(file.dataURL)}" preserveAspectRatio="xMidYMid meet" />`;
+  }
 
-  return `<image x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" href="${escapeAttr(file.dataURL)}" preserveAspectRatio="xMidYMid meet" />`;
+  const resolvedUrl = ctx?.resolvedImages?.[el.fileId];
+  if (resolvedUrl) {
+    return `<image x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" href="${escapeAttr(resolvedUrl)}" preserveAspectRatio="xMidYMid meet" />`;
+  }
+
+  return "";
 }
 
 function renderFrame(el: ExcalidrawElement): string {

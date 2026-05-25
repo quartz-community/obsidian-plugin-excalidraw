@@ -121,10 +121,11 @@ function extractRawJson(block: string): string | null {
 
 function parseEmbeddedFilesSection(content: string): Record<string, string> {
   const result: Record<string, string> = {};
-  const sectionIdx = content.indexOf("# Embedded files");
-  if (sectionIdx === -1) return result;
+  const sectionMatch = content.match(/^##?\s+Embedded\s+[Ff]iles\s*$/im);
+  if (!sectionMatch) return result;
+  const sectionIdx = sectionMatch.index!;
 
-  const afterSection = content.slice(sectionIdx + "# Embedded files".length);
+  const afterSection = content.slice(sectionIdx + sectionMatch[0].length);
   const endIdx = afterSection.indexOf("%%");
   const section = endIdx === -1 ? afterSection : afterSection.slice(0, endIdx);
 

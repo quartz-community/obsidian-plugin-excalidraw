@@ -14,7 +14,7 @@ import {
 import { toHtml } from "hast-util-to-html";
 import type { ExcalidrawData, ExcalidrawPageOptions } from "../types";
 import { renderToSvg } from "../renderer";
-import type { ResolvedEmbed } from "../renderer";
+import type { ResolvedEmbed, RenderContext } from "../renderer";
 import style from "./styles/excalidraw.scss";
 // @ts-expect-error inline script import handled by bundler
 import script from "./scripts/excalidraw.inline.ts";
@@ -83,6 +83,27 @@ function resolveEmbeds(
   return result;
 }
 
+function resolveImages(
+  data: ExcalidrawData,
+  currentSlug: FullSlug,
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  if (!data.embeddedFiles) return result;
+
+  const images = data.elements.filter((el) => el.type === "image" && el.fileId);
+  for (const img of images) {
+    if (data.files[img.fileId!]?.dataURL) continue;
+
+    const wikilink = data.embeddedFiles[img.fileId!];
+    if (!wikilink) continue;
+
+    const imageName = wikilink.split("/").pop() ?? wikilink;
+    result[img.fileId!] = `./${imageName}`;
+  }
+
+  return result;
+}
+
 export default ((userOpts?: ExcalidrawPageOptions) => {
   const Component: QuartzComponent = (props: QuartzComponentProps) => {
     const { fileData, allFiles } = props;
@@ -91,7 +112,12 @@ export default ((userOpts?: ExcalidrawPageOptions) => {
     const currentSlug = fileData.slug!;
 
     const resolvedEmbedMap = allFiles ? resolveEmbeds(data, currentSlug, allFiles) : undefined;
-    const svgContent = renderToSvg(data, options, resolvedEmbedMap);
+    const resolvedImageMap = resolveImages(data, currentSlug);
+    const renderCtx: RenderContext = {
+      resolvedEmbeds: resolvedEmbedMap,
+      resolvedImages: resolvedImageMap,
+    };
+    const svgContent = renderToSvg(data, options, renderCtx);
 
     return (
       <article

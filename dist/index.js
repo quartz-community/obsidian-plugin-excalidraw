@@ -687,9 +687,10 @@ function extractRawJson(block) {
 }
 function parseEmbeddedFilesSection(content) {
   const result = {};
-  const sectionIdx = content.indexOf("# Embedded files");
-  if (sectionIdx === -1) return result;
-  const afterSection = content.slice(sectionIdx + "# Embedded files".length);
+  const sectionMatch = content.match(/^##?\s+Embedded\s+[Ff]iles\s*$/im);
+  if (!sectionMatch) return result;
+  const sectionIdx = sectionMatch.index;
+  const afterSection = content.slice(sectionIdx + sectionMatch[0].length);
   const endIdx = afterSection.indexOf("%%");
   const section = endIdx === -1 ? afterSection : afterSection.slice(0, endIdx);
   const pattern = /^([a-f0-9]+):\s+\[\[(.+?)\]\]\s*$/gm;
@@ -4104,7 +4105,7 @@ var FONT_FAMILIES = {
   3: "Cascadia, monospace",
   4: "Virgil, Segoe UI Emoji, sans-serif"
 };
-function renderToSvg(data, opts = {}, resolvedEmbeds) {
+function renderToSvg(data, opts = {}, ctx) {
   const elements = data.elements.filter((el) => !el.isDeleted);
   if (elements.length === 0) {
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>';
@@ -4116,7 +4117,7 @@ function renderToSvg(data, opts = {}, resolvedEmbeds) {
   const offsetX = -bbox.minX + padding;
   const offsetY = -bbox.minY + padding;
   const bgColor = resolveBgColor(data, opts);
-  const renderedElements = elements.map((el) => renderElement(el, data, resolvedEmbeds)).filter(Boolean);
+  const renderedElements = elements.map((el) => renderElement(el, data, ctx)).filter(Boolean);
   const parts = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" data-bg-color="${escapeAttr(bgColor ?? "#ffffff")}">`,
     `<defs>${getFontDefs()}</defs>`,
@@ -4137,8 +4138,8 @@ function resolveBgColor(data, opts) {
   if (lower === "#ffffff" || lower === "#ffffffff") return "var(--excalidraw-bg, #ffffff)";
   return rawBg;
 }
-function renderElement(el, data, resolvedEmbeds) {
-  const inner = renderElementInner(el, data, resolvedEmbeds);
+function renderElement(el, data, ctx) {
+  const inner = renderElementInner(el, data, ctx);
   if (!inner) return "";
   const attrs = [];
   if (el.angle && el.angle !== 0) {
@@ -4155,7 +4156,7 @@ function renderElement(el, data, resolvedEmbeds) {
   }
   return inner;
 }
-function renderElementInner(el, data, resolvedEmbeds) {
+function renderElementInner(el, data, ctx) {
   switch (el.type) {
     case "rectangle":
       return renderRectangle(el);
@@ -4171,81 +4172,81 @@ function renderElementInner(el, data, resolvedEmbeds) {
     case "freedraw":
       return renderFreedraw(el);
     case "image":
-      return renderImage(el, data);
+      return renderImage(el, data, ctx);
     case "frame":
     case "magicframe":
       return renderFrame(el);
     case "embeddable":
     case "iframe":
-      return renderEmbeddable(el, resolvedEmbeds);
+      return renderEmbeddable(el, ctx?.resolvedEmbeds);
     default:
       return "";
   }
 }
 var DARK_MODE_MAP = {
-  "#1e1e1e": "#f1f1f1",
-  "#000000": "#eeeeee",
-  "#343a40": "#d0ccc8",
-  "#868e96": "#7f776f",
-  "#ced4da": "#373128",
-  "#e9ecef": "#1e1914",
-  "#f8f9fa": "#0f0b07",
-  "#e03131": "#25d4d4",
-  "#fa5252": "#0db3b3",
-  "#ff8787": "#0e7e7e",
-  "#ffc9c9": "#0a3c3c",
-  "#fff5f5": "#020e0e",
-  "#c2255c": "#44dfa8",
-  "#e64980": "#20bb84",
-  "#f783ac": "#146057",
-  "#fcc2d7": "#0b412d",
-  "#fff0f6": "#03130d",
-  "#9c36b5": "#69ce50",
-  "#be4bdb": "#47b929",
-  "#da77f2": "#2b8d12",
-  "#eebefa": "#175008",
-  "#f8f0fc": "#0b1305",
-  "#6741d9": "#9dc32b",
-  "#7950f2": "#8bb412",
-  "#9775fa": "#6d8f09",
-  "#d0bfff": "#344504",
-  "#f3f0ff": "#101202",
-  "#1971c2": "#eb9342",
-  "#228be6": "#e2791e",
-  "#4dabf7": "#b7580c",
-  "#a5d8ff": "#5f2b04",
-  "#e7f5ff": "#1c0d02",
-  "#0c8599": "#f87f6c",
-  "#15aabf": "#ef5a45",
-  "#3bc9db": "#c83a29",
-  "#99e9f2": "#6b1a11",
-  "#e3fafc": "#200806",
-  "#099268": "#fb729d",
-  "#12b886": "#f24c7e",
-  "#38d9a9": "#cb2a5b",
-  "#96f2d7": "#6e112c",
-  "#e6fcf5": "#1d050e",
-  "#2f9e44": "#d566c0",
-  "#40c057": "#c444ad",
-  "#69db7c": "#9a2988",
-  "#b2f2bb": "#511249",
-  "#ebfbee": "#180716",
-  "#f08c00": "#1478ff",
-  "#fab005": "#094fff",
-  "#ffd43b": "#002fc8",
-  "#ffec99": "#00176a",
-  "#fff9db": "#000928",
-  "#e8590c": "#1caaf8",
-  "#fd7e14": "#0786f0",
-  "#ffa94d": "#045ab7",
-  "#ffd8a8": "#022b5b",
-  "#fff4e6": "#010d1d",
-  "#846358": "#80a1ab",
-  "#a18072": "#638491",
-  "#d2bab0": "#314953",
-  "#eaddd7": "#192629",
-  "#f8f1ee": "#0b1214",
-  "#ffffff": "#111111"
+  "#1e1e1e": "#d3d3d3",
+  "#000000": "#ededed",
+  "#343a40": "#b7bcc1",
+  "#868e96": "#6e757c",
+  "#ced4da": "#33383d",
+  "#e9ecef": "#202325",
+  "#f8f9fa": "#161718",
+  "#e03131": "#ff8383",
+  "#fa5252": "#fa6969",
+  "#ff8787": "#b44d4d",
+  "#ffc9c9": "#5a2c2c",
+  "#fff5f5": "#1f1717",
+  "#c2255c": "#ff8dbc",
+  "#e64980": "#f56e9d",
+  "#f783ac": "#b04d70",
+  "#fcc2d7": "#602e40",
+  "#fff0f6": "#26191e",
+  "#9c36b5": "#e28af8",
+  "#be4bdb": "#d471ed",
+  "#da77f2": "#a954be",
+  "#eebefa": "#5b3165",
+  "#f8f0fc": "#211a25",
+  "#6741d9": "#b595ff",
+  "#7950f2": "#a885ff",
+  "#9775fa": "#8a6cdf",
+  "#d0bfff": "#4a3b72",
+  "#f3f0ff": "#1f1c29",
+  "#1971c2": "#56a2e8",
+  "#228be6": "#3791e0",
+  "#4dabf7": "#2273b4",
+  "#a5d8ff": "#154162",
+  "#e7f5ff": "#121e26",
+  "#0c8599": "#3da5b6",
+  "#15aabf": "#0f8fa1",
+  "#3bc9db": "#007281",
+  "#99e9f2": "#004149",
+  "#e3fafc": "#0a1e20",
+  "#099268": "#32a783",
+  "#12b886": "#039267",
+  "#38d9a9": "#00744b",
+  "#96f2d7": "#00422b",
+  "#e6fcf5": "#0a1d17",
+  "#2f9e44": "#39994b",
+  "#40c057": "#16842a",
+  "#69db7c": "#056715",
+  "#b2f2bb": "#043b0c",
+  "#ebfbee": "#0f1d12",
+  "#f08c00": "#b86200",
+  "#fab005": "#905000",
+  "#ffd43b": "#5f3a00",
+  "#ffec99": "#362600",
+  "#fff9db": "#1e1900",
+  "#e8590c": "#f17634",
+  "#fd7e14": "#cd6005",
+  "#ffa94d": "#924800",
+  "#ffd8a8": "#4c2b01",
+  "#fff4e6": "#22190d",
+  "#846358": "#a98d84",
+  "#a18072": "#917569",
+  "#d2bab0": "#5a463d",
+  "#eaddd7": "#362b26",
+  "#f8f1ee": "#221c1a",
+  "#ffffff": "#121212"
 };
 function themeColor(color) {
   const lower = color.toLowerCase();
@@ -4438,11 +4439,17 @@ function getSvgPathFromStroke(points) {
   d4 += " Z";
   return d4;
 }
-function renderImage(el, data) {
+function renderImage(el, data, ctx) {
   if (!el.fileId) return "";
   const file = data.files[el.fileId];
-  if (!file || !file.dataURL) return "";
-  return `<image x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" href="${escapeAttr(file.dataURL)}" preserveAspectRatio="xMidYMid meet" />`;
+  if (file?.dataURL) {
+    return `<image x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" href="${escapeAttr(file.dataURL)}" preserveAspectRatio="xMidYMid meet" />`;
+  }
+  const resolvedUrl = ctx?.resolvedImages?.[el.fileId];
+  if (resolvedUrl) {
+    return `<image x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" href="${escapeAttr(resolvedUrl)}" preserveAspectRatio="xMidYMid meet" />`;
+  }
+  return "";
 }
 function renderFrame(el) {
   return `<rect x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" fill="none" stroke="#aaaaaa" stroke-width="1" stroke-dasharray="5 5" />`;
@@ -4577,7 +4584,7 @@ function escapeAttr(str) {
 }
 
 // src/components/styles/excalidraw.scss
-var excalidraw_default = ".excalidraw-page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  max-width: none;\n  margin: 0;\n  overflow: hidden;\n  user-select: none;\n  background-color: var(--light);\n}\n\n.excalidraw-container {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: grab;\n  touch-action: none;\n  background-color: var(--light);\n}\n.excalidraw-container:active {\n  cursor: grabbing;\n}\n.excalidraw-container svg {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n}\n\n:root {\n  --excalidraw-fg: #1e1e1e;\n  --excalidraw-bg: #ffffff;\n  --excalidraw-color-1e1e1e: #1e1e1e;\n  --excalidraw-color-000000: #000000;\n  --excalidraw-color-ffffff: #ffffff;\n  --excalidraw-color-343a40: #343a40;\n  --excalidraw-color-868e96: #868e96;\n  --excalidraw-color-ced4da: #ced4da;\n  --excalidraw-color-e9ecef: #e9ecef;\n  --excalidraw-color-f8f9fa: #f8f9fa;\n  --excalidraw-color-e03131: #e03131;\n  --excalidraw-color-fa5252: #fa5252;\n  --excalidraw-color-ff8787: #ff8787;\n  --excalidraw-color-ffc9c9: #ffc9c9;\n  --excalidraw-color-fff5f5: #fff5f5;\n  --excalidraw-color-c2255c: #c2255c;\n  --excalidraw-color-e64980: #e64980;\n  --excalidraw-color-f783ac: #f783ac;\n  --excalidraw-color-fcc2d7: #fcc2d7;\n  --excalidraw-color-fff0f6: #fff0f6;\n  --excalidraw-color-9c36b5: #9c36b5;\n  --excalidraw-color-be4bdb: #be4bdb;\n  --excalidraw-color-da77f2: #da77f2;\n  --excalidraw-color-eebefa: #eebefa;\n  --excalidraw-color-f8f0fc: #f8f0fc;\n  --excalidraw-color-6741d9: #6741d9;\n  --excalidraw-color-7950f2: #7950f2;\n  --excalidraw-color-9775fa: #9775fa;\n  --excalidraw-color-d0bfff: #d0bfff;\n  --excalidraw-color-f3f0ff: #f3f0ff;\n  --excalidraw-color-1971c2: #1971c2;\n  --excalidraw-color-228be6: #228be6;\n  --excalidraw-color-4dabf7: #4dabf7;\n  --excalidraw-color-a5d8ff: #a5d8ff;\n  --excalidraw-color-e7f5ff: #e7f5ff;\n  --excalidraw-color-0c8599: #0c8599;\n  --excalidraw-color-15aabf: #15aabf;\n  --excalidraw-color-3bc9db: #3bc9db;\n  --excalidraw-color-99e9f2: #99e9f2;\n  --excalidraw-color-e3fafc: #e3fafc;\n  --excalidraw-color-099268: #099268;\n  --excalidraw-color-12b886: #12b886;\n  --excalidraw-color-38d9a9: #38d9a9;\n  --excalidraw-color-96f2d7: #96f2d7;\n  --excalidraw-color-e6fcf5: #e6fcf5;\n  --excalidraw-color-2f9e44: #2f9e44;\n  --excalidraw-color-40c057: #40c057;\n  --excalidraw-color-69db7c: #69db7c;\n  --excalidraw-color-b2f2bb: #b2f2bb;\n  --excalidraw-color-ebfbee: #ebfbee;\n  --excalidraw-color-f08c00: #f08c00;\n  --excalidraw-color-fab005: #fab005;\n  --excalidraw-color-ffd43b: #ffd43b;\n  --excalidraw-color-ffec99: #ffec99;\n  --excalidraw-color-fff9db: #fff9db;\n  --excalidraw-color-e8590c: #e8590c;\n  --excalidraw-color-fd7e14: #fd7e14;\n  --excalidraw-color-ffa94d: #ffa94d;\n  --excalidraw-color-ffd8a8: #ffd8a8;\n  --excalidraw-color-fff4e6: #fff4e6;\n  --excalidraw-color-846358: #846358;\n  --excalidraw-color-a18072: #a18072;\n  --excalidraw-color-d2bab0: #d2bab0;\n  --excalidraw-color-eaddd7: #eaddd7;\n  --excalidraw-color-f8f1ee: #f8f1ee;\n}\n\n:root[saved-theme=dark] {\n  --excalidraw-fg: #f1f1f1;\n  --excalidraw-bg: #111111;\n  --excalidraw-color-1e1e1e: #f1f1f1;\n  --excalidraw-color-000000: #eeeeee;\n  --excalidraw-color-ffffff: #111111;\n  --excalidraw-color-343a40: #d0ccc8;\n  --excalidraw-color-868e96: #7f776f;\n  --excalidraw-color-ced4da: #373128;\n  --excalidraw-color-e9ecef: #1e1914;\n  --excalidraw-color-f8f9fa: #0f0b07;\n  --excalidraw-color-e03131: #25d4d4;\n  --excalidraw-color-fa5252: #0db3b3;\n  --excalidraw-color-ff8787: #0e7e7e;\n  --excalidraw-color-ffc9c9: #0a3c3c;\n  --excalidraw-color-fff5f5: #020e0e;\n  --excalidraw-color-c2255c: #44dfa8;\n  --excalidraw-color-e64980: #20bb84;\n  --excalidraw-color-f783ac: #146057;\n  --excalidraw-color-fcc2d7: #0b412d;\n  --excalidraw-color-fff0f6: #03130d;\n  --excalidraw-color-9c36b5: #69ce50;\n  --excalidraw-color-be4bdb: #47b929;\n  --excalidraw-color-da77f2: #2b8d12;\n  --excalidraw-color-eebefa: #175008;\n  --excalidraw-color-f8f0fc: #0b1305;\n  --excalidraw-color-6741d9: #9dc32b;\n  --excalidraw-color-7950f2: #8bb412;\n  --excalidraw-color-9775fa: #6d8f09;\n  --excalidraw-color-d0bfff: #344504;\n  --excalidraw-color-f3f0ff: #101202;\n  --excalidraw-color-1971c2: #eb9342;\n  --excalidraw-color-228be6: #e2791e;\n  --excalidraw-color-4dabf7: #b7580c;\n  --excalidraw-color-a5d8ff: #5f2b04;\n  --excalidraw-color-e7f5ff: #1c0d02;\n  --excalidraw-color-0c8599: #f87f6c;\n  --excalidraw-color-15aabf: #ef5a45;\n  --excalidraw-color-3bc9db: #c83a29;\n  --excalidraw-color-99e9f2: #6b1a11;\n  --excalidraw-color-e3fafc: #200806;\n  --excalidraw-color-099268: #fb729d;\n  --excalidraw-color-12b886: #f24c7e;\n  --excalidraw-color-38d9a9: #cb2a5b;\n  --excalidraw-color-96f2d7: #6e112c;\n  --excalidraw-color-e6fcf5: #1d050e;\n  --excalidraw-color-2f9e44: #d566c0;\n  --excalidraw-color-40c057: #c444ad;\n  --excalidraw-color-69db7c: #9a2988;\n  --excalidraw-color-b2f2bb: #511249;\n  --excalidraw-color-ebfbee: #180716;\n  --excalidraw-color-f08c00: #1478ff;\n  --excalidraw-color-fab005: #094fff;\n  --excalidraw-color-ffd43b: #002fc8;\n  --excalidraw-color-ffec99: #00176a;\n  --excalidraw-color-fff9db: #000928;\n  --excalidraw-color-e8590c: #1caaf8;\n  --excalidraw-color-fd7e14: #0786f0;\n  --excalidraw-color-ffa94d: #045ab7;\n  --excalidraw-color-ffd8a8: #022b5b;\n  --excalidraw-color-fff4e6: #010d1d;\n  --excalidraw-color-846358: #80a1ab;\n  --excalidraw-color-a18072: #638491;\n  --excalidraw-color-d2bab0: #314953;\n  --excalidraw-color-eaddd7: #192629;\n  --excalidraw-color-f8f1ee: #0b1214;\n}\n\n.excalidraw-controls {\n  position: fixed;\n  bottom: 1rem;\n  right: 1rem;\n  z-index: 10;\n  display: flex;\n  flex-direction: row;\n  gap: 0.25rem;\n}\n.excalidraw-controls button {\n  width: 2rem;\n  height: 2rem;\n  border: 1px solid var(--lightgray);\n  border-radius: 6px;\n  background: var(--light);\n  color: var(--darkgray);\n  font-size: 1.2rem;\n  line-height: 1;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: background-color 0.1s ease;\n}\n.excalidraw-controls button:hover {\n  background: var(--lightgray);\n}\n\n.page[data-frame=excalidraw] {\n  --excalidraw-sidebar-width: 300px;\n}\n\n.page[data-frame=excalidraw] .excalidraw-frame {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  padding-left: 0;\n  transition: padding-left 0.2s ease;\n}\n\n.page[data-frame=excalidraw] .excalidraw-stage {\n  width: 100%;\n  height: 100%;\n}\n\n.page[data-frame=excalidraw] .excalidraw-sidebar {\n  position: fixed;\n  top: 0;\n  height: 100vh;\n  width: var(--excalidraw-sidebar-width);\n  box-sizing: border-box;\n  background: var(--light);\n  border-right: 1px solid var(--lightgray);\n  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.12);\n  overflow-y: hidden;\n  left: calc(-1 * var(--excalidraw-sidebar-width));\n  transition: left 0.25s ease;\n  z-index: 20;\n}\n\n.page[data-frame=excalidraw] .excalidraw-sidebar-toggle {\n  position: fixed;\n  top: 12px;\n  left: 12px;\n  width: 32px;\n  height: 32px;\n  border: 1px solid var(--lightgray);\n  border-radius: 6px;\n  background: var(--light);\n  color: var(--darkgray);\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 30;\n  transition: background 0.1s ease, left 0.25s ease;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar-toggle:hover {\n  background: var(--lightgray);\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar-toggle svg {\n  pointer-events: none;\n}\n\n.page[data-frame=excalidraw] .excalidraw-sidebar-icon-close {\n  display: none;\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-frame {\n  padding-left: var(--excalidraw-sidebar-width);\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar {\n  left: 0;\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar-toggle {\n  left: calc(var(--excalidraw-sidebar-width) + 12px);\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar-icon-open {\n  display: none;\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar-icon-close {\n  display: block;\n}\n\n@media (max-width: 800px) {\n  .page[data-frame=excalidraw] {\n    --excalidraw-sidebar-width: calc(100vw - 56px);\n  }\n  .page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-frame {\n    padding-left: 0;\n  }\n  .page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar-toggle {\n    left: calc(var(--excalidraw-sidebar-width) + 12px);\n  }\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar {\n  padding: 1rem;\n  display: flex;\n  flex-direction: column;\n  gap: 1rem;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .spacer {\n  display: none;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer button.desktop-explorer,\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer button.mobile-explorer {\n  display: none !important;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer {\n  order: initial;\n  overflow-y: hidden;\n  overflow: hidden;\n  flex: 1 1 0;\n  min-height: 0;\n  flex-shrink: initial;\n  align-self: initial;\n  margin-top: 0;\n  margin-bottom: 0;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer .explorer-content,\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer.collapsed > .explorer-content,\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer:not(.collapsed) > .explorer-content {\n  position: static;\n  width: auto;\n  max-width: none;\n  height: 100%;\n  max-height: 100%;\n  transform: none !important;\n  visibility: visible !important;\n  padding: 0;\n  overflow-y: auto;\n  z-index: auto;\n  background-color: transparent;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer-content > .explorer-ul {\n  overscroll-behavior: auto;\n}\n\n.excalidraw-embed-note,\n.excalidraw-embed-url {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  border-radius: 8px;\n  border: 2px solid var(--lightgray);\n  display: flex;\n  flex-direction: column;\n  background: var(--light);\n  box-sizing: border-box;\n}\n\n.excalidraw-embed-header {\n  padding: 8px 12px;\n  border-bottom: 1px solid var(--lightgray);\n  font-size: 13px;\n  font-family: var(--bodyFont, sans-serif);\n  color: var(--darkgray);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  flex-shrink: 0;\n}\n.excalidraw-embed-header a {\n  color: var(--darkgray);\n  text-decoration: none;\n}\n\n.excalidraw-embed-content {\n  flex: 1;\n  overflow: auto;\n  padding: 8px 12px;\n  font-family: var(--bodyFont, sans-serif);\n  font-size: 12px;\n  line-height: 1.5;\n  color: var(--darkgray);\n  background: var(--light);\n}\n\n.excalidraw-embed-open-link {\n  display: block;\n  padding: 4px 0;\n  color: var(--secondary);\n  font-size: 12px;\n  text-decoration: none;\n  font-family: var(--bodyFont, sans-serif);\n}\n\n.excalidraw-embed-body {\n  font-size: 12px;\n  line-height: 1.5;\n  color: var(--dark);\n}\n\n.excalidraw-embed-missing {\n  color: var(--gray);\n  font-size: 12px;\n}\n\n.excalidraw-embed-iframe {\n  flex: 1;\n  width: 100%;\n  border: none;\n}\n\n.transclude .excalidraw-page {\n  height: auto;\n}\n.transclude .excalidraw-container {\n  height: auto;\n  min-height: 400px;\n}\n.transclude .excalidraw-controls {\n  position: absolute;\n}\n\n.popover-inner .excalidraw-page {\n  height: auto;\n}\n.popover-inner .excalidraw-container {\n  height: auto;\n  min-height: 200px;\n  max-height: 300px;\n}\n.popover-inner .excalidraw-controls {\n  display: none;\n}";
+var excalidraw_default = '.excalidraw-page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  max-width: none;\n  margin: 0;\n  overflow: hidden;\n  user-select: none;\n  background-color: var(--light);\n}\n\n.excalidraw-container {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: grab;\n  touch-action: none;\n  background-color: var(--light);\n}\n.excalidraw-container:active {\n  cursor: grabbing;\n}\n.excalidraw-container svg {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n}\n\n:root {\n  --excalidraw-fg: #1e1e1e;\n  --excalidraw-bg: #ffffff;\n  --excalidraw-color-1e1e1e: #1e1e1e;\n  --excalidraw-color-000000: #000000;\n  --excalidraw-color-ffffff: #ffffff;\n  --excalidraw-color-343a40: #343a40;\n  --excalidraw-color-868e96: #868e96;\n  --excalidraw-color-ced4da: #ced4da;\n  --excalidraw-color-e9ecef: #e9ecef;\n  --excalidraw-color-f8f9fa: #f8f9fa;\n  --excalidraw-color-e03131: #e03131;\n  --excalidraw-color-fa5252: #fa5252;\n  --excalidraw-color-ff8787: #ff8787;\n  --excalidraw-color-ffc9c9: #ffc9c9;\n  --excalidraw-color-fff5f5: #fff5f5;\n  --excalidraw-color-c2255c: #c2255c;\n  --excalidraw-color-e64980: #e64980;\n  --excalidraw-color-f783ac: #f783ac;\n  --excalidraw-color-fcc2d7: #fcc2d7;\n  --excalidraw-color-fff0f6: #fff0f6;\n  --excalidraw-color-9c36b5: #9c36b5;\n  --excalidraw-color-be4bdb: #be4bdb;\n  --excalidraw-color-da77f2: #da77f2;\n  --excalidraw-color-eebefa: #eebefa;\n  --excalidraw-color-f8f0fc: #f8f0fc;\n  --excalidraw-color-6741d9: #6741d9;\n  --excalidraw-color-7950f2: #7950f2;\n  --excalidraw-color-9775fa: #9775fa;\n  --excalidraw-color-d0bfff: #d0bfff;\n  --excalidraw-color-f3f0ff: #f3f0ff;\n  --excalidraw-color-1971c2: #1971c2;\n  --excalidraw-color-228be6: #228be6;\n  --excalidraw-color-4dabf7: #4dabf7;\n  --excalidraw-color-a5d8ff: #a5d8ff;\n  --excalidraw-color-e7f5ff: #e7f5ff;\n  --excalidraw-color-0c8599: #0c8599;\n  --excalidraw-color-15aabf: #15aabf;\n  --excalidraw-color-3bc9db: #3bc9db;\n  --excalidraw-color-99e9f2: #99e9f2;\n  --excalidraw-color-e3fafc: #e3fafc;\n  --excalidraw-color-099268: #099268;\n  --excalidraw-color-12b886: #12b886;\n  --excalidraw-color-38d9a9: #38d9a9;\n  --excalidraw-color-96f2d7: #96f2d7;\n  --excalidraw-color-e6fcf5: #e6fcf5;\n  --excalidraw-color-2f9e44: #2f9e44;\n  --excalidraw-color-40c057: #40c057;\n  --excalidraw-color-69db7c: #69db7c;\n  --excalidraw-color-b2f2bb: #b2f2bb;\n  --excalidraw-color-ebfbee: #ebfbee;\n  --excalidraw-color-f08c00: #f08c00;\n  --excalidraw-color-fab005: #fab005;\n  --excalidraw-color-ffd43b: #ffd43b;\n  --excalidraw-color-ffec99: #ffec99;\n  --excalidraw-color-fff9db: #fff9db;\n  --excalidraw-color-e8590c: #e8590c;\n  --excalidraw-color-fd7e14: #fd7e14;\n  --excalidraw-color-ffa94d: #ffa94d;\n  --excalidraw-color-ffd8a8: #ffd8a8;\n  --excalidraw-color-fff4e6: #fff4e6;\n  --excalidraw-color-846358: #846358;\n  --excalidraw-color-a18072: #a18072;\n  --excalidraw-color-d2bab0: #d2bab0;\n  --excalidraw-color-eaddd7: #eaddd7;\n  --excalidraw-color-f8f1ee: #f8f1ee;\n}\n\n:root[saved-theme=dark] {\n  --excalidraw-fg: #d3d3d3;\n  --excalidraw-bg: #121212;\n  --excalidraw-color-1e1e1e: #d3d3d3;\n  --excalidraw-color-000000: #ededed;\n  --excalidraw-color-ffffff: #121212;\n  --excalidraw-color-343a40: #b7bcc1;\n  --excalidraw-color-868e96: #6e757c;\n  --excalidraw-color-ced4da: #33383d;\n  --excalidraw-color-e9ecef: #202325;\n  --excalidraw-color-f8f9fa: #161718;\n  --excalidraw-color-e03131: #ff8383;\n  --excalidraw-color-fa5252: #fa6969;\n  --excalidraw-color-ff8787: #b44d4d;\n  --excalidraw-color-ffc9c9: #5a2c2c;\n  --excalidraw-color-fff5f5: #1f1717;\n  --excalidraw-color-c2255c: #ff8dbc;\n  --excalidraw-color-e64980: #f56e9d;\n  --excalidraw-color-f783ac: #b04d70;\n  --excalidraw-color-fcc2d7: #602e40;\n  --excalidraw-color-fff0f6: #26191e;\n  --excalidraw-color-9c36b5: #e28af8;\n  --excalidraw-color-be4bdb: #d471ed;\n  --excalidraw-color-da77f2: #a954be;\n  --excalidraw-color-eebefa: #5b3165;\n  --excalidraw-color-f8f0fc: #211a25;\n  --excalidraw-color-6741d9: #b595ff;\n  --excalidraw-color-7950f2: #a885ff;\n  --excalidraw-color-9775fa: #8a6cdf;\n  --excalidraw-color-d0bfff: #4a3b72;\n  --excalidraw-color-f3f0ff: #1f1c29;\n  --excalidraw-color-1971c2: #56a2e8;\n  --excalidraw-color-228be6: #3791e0;\n  --excalidraw-color-4dabf7: #2273b4;\n  --excalidraw-color-a5d8ff: #154162;\n  --excalidraw-color-e7f5ff: #121e26;\n  --excalidraw-color-0c8599: #3da5b6;\n  --excalidraw-color-15aabf: #0f8fa1;\n  --excalidraw-color-3bc9db: #007281;\n  --excalidraw-color-99e9f2: #004149;\n  --excalidraw-color-e3fafc: #0a1e20;\n  --excalidraw-color-099268: #32a783;\n  --excalidraw-color-12b886: #039267;\n  --excalidraw-color-38d9a9: #00744b;\n  --excalidraw-color-96f2d7: #00422b;\n  --excalidraw-color-e6fcf5: #0a1d17;\n  --excalidraw-color-2f9e44: #39994b;\n  --excalidraw-color-40c057: #16842a;\n  --excalidraw-color-69db7c: #056715;\n  --excalidraw-color-b2f2bb: #043b0c;\n  --excalidraw-color-ebfbee: #0f1d12;\n  --excalidraw-color-f08c00: #b86200;\n  --excalidraw-color-fab005: #905000;\n  --excalidraw-color-ffd43b: #5f3a00;\n  --excalidraw-color-ffec99: #362600;\n  --excalidraw-color-fff9db: #1e1900;\n  --excalidraw-color-e8590c: #f17634;\n  --excalidraw-color-fd7e14: #cd6005;\n  --excalidraw-color-ffa94d: #924800;\n  --excalidraw-color-ffd8a8: #4c2b01;\n  --excalidraw-color-fff4e6: #22190d;\n  --excalidraw-color-846358: #a98d84;\n  --excalidraw-color-a18072: #917569;\n  --excalidraw-color-d2bab0: #5a463d;\n  --excalidraw-color-eaddd7: #362b26;\n  --excalidraw-color-f8f1ee: #221c1a;\n}\n\n.excalidraw-controls {\n  position: fixed;\n  bottom: 1rem;\n  right: 1rem;\n  z-index: 10;\n  display: flex;\n  flex-direction: row;\n  gap: 0.25rem;\n}\n.excalidraw-controls button {\n  width: 2rem;\n  height: 2rem;\n  border: 1px solid var(--lightgray);\n  border-radius: 6px;\n  background: var(--light);\n  color: var(--darkgray);\n  font-size: 1.2rem;\n  line-height: 1;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transition: background-color 0.1s ease;\n}\n.excalidraw-controls button:hover {\n  background: var(--lightgray);\n}\n\n.page[data-frame=excalidraw] {\n  --excalidraw-sidebar-width: 300px;\n}\n\n.page[data-frame=excalidraw] .excalidraw-frame {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  padding-left: 0;\n  transition: padding-left 0.2s ease;\n}\n\n.page[data-frame=excalidraw] .excalidraw-stage {\n  width: 100%;\n  height: 100%;\n}\n\n.page[data-frame=excalidraw] .excalidraw-sidebar {\n  position: fixed;\n  top: 0;\n  height: 100vh;\n  width: var(--excalidraw-sidebar-width);\n  box-sizing: border-box;\n  background: var(--light);\n  border-right: 1px solid var(--lightgray);\n  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.12);\n  overflow-y: hidden;\n  left: calc(-1 * var(--excalidraw-sidebar-width));\n  transition: left 0.25s ease;\n  z-index: 20;\n}\n\n.page[data-frame=excalidraw] .excalidraw-sidebar-toggle {\n  position: fixed;\n  top: 12px;\n  left: 12px;\n  width: 32px;\n  height: 32px;\n  border: 1px solid var(--lightgray);\n  border-radius: 6px;\n  background: var(--light);\n  color: var(--darkgray);\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 30;\n  transition: background 0.1s ease, left 0.25s ease;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar-toggle:hover {\n  background: var(--lightgray);\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar-toggle svg {\n  pointer-events: none;\n}\n\n.page[data-frame=excalidraw] .excalidraw-sidebar-icon-close {\n  display: none;\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-frame {\n  padding-left: var(--excalidraw-sidebar-width);\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar {\n  left: 0;\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar-toggle {\n  left: calc(var(--excalidraw-sidebar-width) + 12px);\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar-icon-open {\n  display: none;\n}\n\n.page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar-icon-close {\n  display: block;\n}\n\n@media (max-width: 800px) {\n  .page[data-frame=excalidraw] {\n    --excalidraw-sidebar-width: calc(100vw - 56px);\n  }\n  .page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-frame {\n    padding-left: 0;\n  }\n  .page[data-frame=excalidraw].excalidraw-sidebar-open .excalidraw-sidebar-toggle {\n    left: calc(var(--excalidraw-sidebar-width) + 12px);\n  }\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar {\n  padding: 1rem;\n  display: flex;\n  flex-direction: column;\n  gap: 1rem;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .spacer {\n  display: none;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer button.desktop-explorer,\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer button.mobile-explorer {\n  display: none !important;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer {\n  order: initial;\n  overflow-y: hidden;\n  overflow: hidden;\n  flex: 1 1 0;\n  min-height: 0;\n  flex-shrink: initial;\n  align-self: initial;\n  margin-top: 0;\n  margin-bottom: 0;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer .explorer-content,\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer.collapsed > .explorer-content,\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer:not(.collapsed) > .explorer-content {\n  position: static;\n  width: auto;\n  max-width: none;\n  height: 100%;\n  max-height: 100%;\n  transform: none !important;\n  visibility: visible !important;\n  padding: 0;\n  overflow-y: auto;\n  z-index: auto;\n  background-color: transparent;\n}\n.page[data-frame=excalidraw] .excalidraw-sidebar .explorer-content > .explorer-ul {\n  overscroll-behavior: auto;\n}\n\n.excalidraw-embed-note,\n.excalidraw-embed-url {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  border-radius: 8px;\n  border: 2px solid var(--lightgray);\n  display: flex;\n  flex-direction: column;\n  background: var(--light);\n  box-sizing: border-box;\n}\n\n.excalidraw-embed-header {\n  padding: 8px 12px;\n  border-bottom: 1px solid var(--lightgray);\n  font-size: 13px;\n  font-family: var(--bodyFont, sans-serif);\n  color: var(--darkgray);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  flex-shrink: 0;\n}\n.excalidraw-embed-header a {\n  color: var(--darkgray);\n  text-decoration: none;\n}\n\n.excalidraw-embed-content {\n  flex: 1;\n  overflow: auto;\n  padding: 8px 12px;\n  font-family: var(--bodyFont, sans-serif);\n  font-size: 12px;\n  line-height: 1.5;\n  color: var(--darkgray);\n  background: var(--light);\n}\n\n.excalidraw-embed-open-link {\n  display: block;\n  padding: 4px 0;\n  color: var(--secondary);\n  font-size: 12px;\n  text-decoration: none;\n  font-family: var(--bodyFont, sans-serif);\n}\n\n.excalidraw-embed-body {\n  font-size: 12px;\n  line-height: 1.5;\n  color: var(--dark);\n}\n.excalidraw-embed-body h1, .excalidraw-embed-body h2, .excalidraw-embed-body h3, .excalidraw-embed-body h4, .excalidraw-embed-body h5, .excalidraw-embed-body h6 {\n  font-size: 1em;\n  margin: 0.5em 0 0.25em;\n}\n.excalidraw-embed-body h1[id] > a[href^="#"], .excalidraw-embed-body h2[id] > a[href^="#"], .excalidraw-embed-body h3[id] > a[href^="#"], .excalidraw-embed-body h4[id] > a[href^="#"], .excalidraw-embed-body h5[id] > a[href^="#"], .excalidraw-embed-body h6[id] > a[href^="#"] {\n  display: none;\n}\n\n.excalidraw-embed-missing {\n  color: var(--gray);\n  font-size: 12px;\n}\n\n.excalidraw-embed-iframe {\n  flex: 1;\n  width: 100%;\n  border: none;\n}\n\n.transclude .excalidraw-page {\n  height: auto;\n}\n.transclude .excalidraw-container {\n  height: auto;\n  min-height: 400px;\n}\n.transclude .excalidraw-controls {\n  position: absolute;\n}\n\n.popover-inner .excalidraw-page {\n  height: auto;\n}\n.popover-inner .excalidraw-container {\n  height: auto;\n  min-height: 200px;\n  max-height: 300px;\n}\n.popover-inner .excalidraw-controls {\n  display: none;\n}';
 
 // src/components/scripts/excalidraw.inline.ts
 var excalidraw_inline_default = 'function x(){let t=document.querySelector(".page[data-frame=\'excalidraw\']");if(t){L(t),E(t);return}let e=document.querySelectorAll(".excalidraw-page");for(let a of e)E(a)}function L(t){let e=t.querySelector(".excalidraw-sidebar-toggle");e&&(e.addEventListener("click",()=>{t.classList.toggle("excalidraw-sidebar-open")}),window.addCleanup(()=>{t.classList.remove("excalidraw-sidebar-open")}))}function E(t){let e=t.querySelector(".excalidraw-container");if(!e)return;let a=e.querySelector("svg");if(!a)return;e.style.backgroundColor="var(--excalidraw-bg, var(--light))";let o=1,i=0,c=0,s=!1,l=0,d=0;function r(){a.style.transform=`translate(${i}px, ${c}px) scale(${o})`}function u(n){n.preventDefault();let g=n.deltaY>0?-.15:.15;o=Math.max(.1,Math.min(5,o+g)),r()}function m(n){n.button===0&&(s=!0,l=n.clientX-i,d=n.clientY-c,e.style.cursor="grabbing")}function v(n){s&&(i=n.clientX-l,c=n.clientY-d,r())}function f(){s=!1,e.style.cursor="grab"}let M=t.querySelector(".excalidraw-zoom-in"),O=t.querySelector(".excalidraw-zoom-out"),w=t.querySelector(".excalidraw-reset");M&&M.addEventListener("click",()=>{o=Math.min(5,o+.15),r()}),O&&O.addEventListener("click",()=>{o=Math.max(.1,o-.15),r()}),w&&w.addEventListener("click",()=>{o=1,i=0,c=0,r()}),e.addEventListener("wheel",u,{passive:!1}),e.addEventListener("mousedown",m),document.addEventListener("mousemove",v),document.addEventListener("mouseup",f),window.addCleanup(()=>{e.removeEventListener("wheel",u),e.removeEventListener("mousedown",m),document.removeEventListener("mousemove",v),document.removeEventListener("mouseup",f)})}document.addEventListener("nav",x);\n';
@@ -4651,6 +4658,19 @@ function resolveEmbeds(data, currentSlug, allFiles) {
   }
   return result;
 }
+function resolveImages(data, currentSlug) {
+  const result = {};
+  if (!data.embeddedFiles) return result;
+  const images = data.elements.filter((el) => el.type === "image" && el.fileId);
+  for (const img of images) {
+    if (data.files[img.fileId]?.dataURL) continue;
+    const wikilink = data.embeddedFiles[img.fileId];
+    if (!wikilink) continue;
+    const imageName = wikilink.split("/").pop() ?? wikilink;
+    result[img.fileId] = `./${imageName}`;
+  }
+  return result;
+}
 var ExcalidrawBody_default = ((userOpts) => {
   const Component = (props) => {
     const { fileData, allFiles } = props;
@@ -4658,7 +4678,12 @@ var ExcalidrawBody_default = ((userOpts) => {
     const options = fileData.excalidrawOptions ?? userOpts ?? {};
     const currentSlug = fileData.slug;
     const resolvedEmbedMap = allFiles ? resolveEmbeds(data, currentSlug, allFiles) : void 0;
-    const svgContent = renderToSvg(data, options, resolvedEmbedMap);
+    const resolvedImageMap = resolveImages(data);
+    const renderCtx = {
+      resolvedEmbeds: resolvedEmbedMap,
+      resolvedImages: resolvedImageMap
+    };
+    const svgContent = renderToSvg(data, options, renderCtx);
     return /* @__PURE__ */ u4(
       "article",
       {

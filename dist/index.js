@@ -4662,8 +4662,7 @@ function resolveImages(imagePaths, currentSlug) {
   const result = {};
   for (const [hash, filePath] of Object.entries(imagePaths)) {
     const imageSlug = slugifyFilePath(filePath);
-    const ext = filePath.match(/\.[^.]+$/)?.[0] ?? "";
-    result[hash] = resolveRelative(currentSlug, imageSlug) + ext;
+    result[hash] = resolveRelative(currentSlug, imageSlug);
   }
   return result;
 }

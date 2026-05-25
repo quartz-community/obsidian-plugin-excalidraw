@@ -91,8 +91,7 @@ function resolveImages(
 
   for (const [hash, filePath] of Object.entries(imagePaths)) {
     const imageSlug = slugifyFilePath(filePath as FilePath) as FullSlug;
-    const ext = filePath.match(/\.[^.]+$/)?.[0] ?? "";
-    result[hash] = resolveRelative(currentSlug, imageSlug) + ext;
+    result[hash] = resolveRelative(currentSlug, imageSlug);
   }
 
   return result;

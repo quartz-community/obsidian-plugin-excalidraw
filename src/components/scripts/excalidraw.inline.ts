@@ -53,18 +53,12 @@ function initPanZoom(page) {
     var overlays = overlaysContainer.querySelectorAll(".excalidraw-overlay");
     if (overlays.length === 0) return;
 
-    var vbW = parseFloat(overlaysContainer.getAttribute("data-viewbox-w")) || 1;
-    var vbH = parseFloat(overlaysContainer.getAttribute("data-viewbox-h")) || 1;
     var offX = parseFloat(overlaysContainer.getAttribute("data-offset-x")) || 0;
     var offY = parseFloat(overlaysContainer.getAttribute("data-offset-y")) || 0;
 
-    var rect = container.getBoundingClientRect();
-    var containerW = rect.width;
-    var containerH = rect.height;
-
-    var baseScale = Math.min(containerW / vbW, containerH / vbH);
-    var baseCenterX = (containerW - vbW * baseScale) / 2;
-    var baseCenterY = (containerH - vbH * baseScale) / 2;
+    var ctm = svg.getScreenCTM();
+    var containerRect = container.getBoundingClientRect();
+    if (!ctm) return;
 
     for (var i = 0; i < overlays.length; i++) {
       var el = overlays[i];
@@ -73,15 +67,18 @@ function initPanZoom(page) {
       var ew = parseFloat(el.getAttribute("data-w")) || 0;
       var eh = parseFloat(el.getAttribute("data-h")) || 0;
 
-      var baseLeft = baseCenterX + (ex + offX) * baseScale;
-      var baseTop = baseCenterY + (ey + offY) * baseScale;
-      var baseWidth = ew * baseScale;
-      var baseHeight = eh * baseScale;
+      var svgX = ex + offX;
+      var svgY = ey + offY;
 
-      el.style.left = (baseLeft * zoom + panX) + "px";
-      el.style.top = (baseTop * zoom + panY) + "px";
-      el.style.width = (baseWidth * zoom) + "px";
-      el.style.height = (baseHeight * zoom) + "px";
+      var screenLeft = svgX * ctm.a + ctm.e - containerRect.left;
+      var screenTop = svgY * ctm.d + ctm.f - containerRect.top;
+      var screenWidth = ew * ctm.a;
+      var screenHeight = eh * ctm.d;
+
+      el.style.left = screenLeft + "px";
+      el.style.top = screenTop + "px";
+      el.style.width = screenWidth + "px";
+      el.style.height = screenHeight + "px";
       el.style.display = "flex";
     }
   }

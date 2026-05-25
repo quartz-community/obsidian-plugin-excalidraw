@@ -4608,7 +4608,9 @@ function stripTranscludes(html5) {
 }
 function resolveEmbeds(data, currentSlug, allFiles) {
   const result = {};
-  const embeddables = data.elements.filter((el) => el.type === "embeddable" || el.type === "iframe");
+  const embeddables = data.elements.filter(
+    (el) => el.type === "embeddable" || el.type === "iframe"
+  );
   for (const el of embeddables) {
     const link = el.link ?? "";
     if (!link.startsWith("[[")) continue;

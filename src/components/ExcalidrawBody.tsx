@@ -83,7 +83,7 @@ function resolveEmbeds(
   return result;
 }
 
-function resolveImages(data: ExcalidrawData, currentSlug: FullSlug): Record<string, string> {
+function resolveImages(data: ExcalidrawData): Record<string, string> {
   const result: Record<string, string> = {};
   if (!data.embeddedFiles) return result;
 
@@ -161,7 +161,7 @@ export default ((userOpts?: ExcalidrawPageOptions) => {
     const currentSlug = fileData.slug!;
 
     const resolvedEmbedMap = allFiles ? resolveEmbeds(data, currentSlug, allFiles) : undefined;
-    const resolvedImageMap = resolveImages(data, currentSlug);
+    const resolvedImageMap = resolveImages(data);
     const renderCtx: RenderContext = {
       resolvedEmbeds: resolvedEmbedMap,
       resolvedImages: resolvedImageMap,

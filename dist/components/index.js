@@ -4049,7 +4049,7 @@ function resolveEmbeds(data, currentSlug, allFiles) {
   }
   return result;
 }
-function resolveImages(data, currentSlug) {
+function resolveImages(data) {
   const result = {};
   if (!data.embeddedFiles) return result;
   const images = data.elements.filter((el) => el.type === "image" && el.fileId);

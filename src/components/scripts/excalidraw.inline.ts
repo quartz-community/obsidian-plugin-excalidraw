@@ -122,21 +122,21 @@ function initPanZoom(page) {
   var resetBtn = page.querySelector(".excalidraw-reset");
 
   if (zoomInBtn) {
-    zoomInBtn.addEventListener("click", function() {
+    zoomInBtn.addEventListener("click", function () {
       zoom = Math.min(MAX_ZOOM, zoom + ZOOM_STEP);
       applyTransform();
     });
   }
 
   if (zoomOutBtn) {
-    zoomOutBtn.addEventListener("click", function() {
+    zoomOutBtn.addEventListener("click", function () {
       zoom = Math.max(MIN_ZOOM, zoom - ZOOM_STEP);
       applyTransform();
     });
   }
 
   if (resetBtn) {
-    resetBtn.addEventListener("click", function() {
+    resetBtn.addEventListener("click", function () {
       zoom = 1;
       panX = 0;
       panY = 0;
@@ -149,7 +149,7 @@ function initPanZoom(page) {
   document.addEventListener("mousemove", handleMouseMove);
   document.addEventListener("mouseup", handleMouseUp);
 
-  window.addCleanup(function() {
+  window.addCleanup(function () {
     container.removeEventListener("wheel", handleWheel);
     container.removeEventListener("mousedown", handleMouseDown);
     document.removeEventListener("mousemove", handleMouseMove);

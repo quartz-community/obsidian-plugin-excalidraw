@@ -83,19 +83,16 @@ function resolveEmbeds(
   return result;
 }
 
-function resolveImages(data: ExcalidrawData): Record<string, string> {
+function resolveImages(
+  imagePaths: Record<string, string>,
+  currentSlug: FullSlug,
+): Record<string, string> {
   const result: Record<string, string> = {};
-  if (!data.embeddedFiles) return result;
 
-  const images = data.elements.filter((el) => el.type === "image" && el.fileId);
-  for (const img of images) {
-    if (data.files[img.fileId!]?.dataURL) continue;
-
-    const wikilink = data.embeddedFiles[img.fileId!];
-    if (!wikilink) continue;
-
-    const imageName = wikilink.split("/").pop() ?? wikilink;
-    result[img.fileId!] = `./${imageName}`;
+  for (const [hash, filePath] of Object.entries(imagePaths)) {
+    const imageSlug = slugifyFilePath(filePath as FilePath) as FullSlug;
+    const ext = filePath.match(/\.[^.]+$/)?.[0] ?? "";
+    result[hash] = resolveRelative(currentSlug, imageSlug) + ext;
   }
 
   return result;
@@ -161,7 +158,8 @@ export default ((userOpts?: ExcalidrawPageOptions) => {
     const currentSlug = fileData.slug!;
 
     const resolvedEmbedMap = allFiles ? resolveEmbeds(data, currentSlug, allFiles) : undefined;
-    const resolvedImageMap = resolveImages(data);
+    const imagePaths = (fileData.excalidrawImagePaths as Record<string, string>) ?? {};
+    const resolvedImageMap = resolveImages(imagePaths, currentSlug);
     const renderCtx: RenderContext = {
       resolvedEmbeds: resolvedEmbedMap,
       resolvedImages: resolvedImageMap,

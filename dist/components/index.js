@@ -4049,16 +4049,12 @@ function resolveEmbeds(data, currentSlug, allFiles) {
   }
   return result;
 }
-function resolveImages(data) {
+function resolveImages(imagePaths, currentSlug) {
   const result = {};
-  if (!data.embeddedFiles) return result;
-  const images = data.elements.filter((el) => el.type === "image" && el.fileId);
-  for (const img of images) {
-    if (data.files[img.fileId]?.dataURL) continue;
-    const wikilink = data.embeddedFiles[img.fileId];
-    if (!wikilink) continue;
-    const imageName = wikilink.split("/").pop() ?? wikilink;
-    result[img.fileId] = `./${imageName}`;
+  for (const [hash, filePath] of Object.entries(imagePaths)) {
+    const imageSlug = slugifyFilePath(filePath);
+    const ext = filePath.match(/\.[^.]+$/)?.[0] ?? "";
+    result[hash] = resolveRelative(currentSlug, imageSlug) + ext;
   }
   return result;
 }
@@ -4115,7 +4111,8 @@ var ExcalidrawBody_default = ((userOpts) => {
     const options = fileData.excalidrawOptions ?? userOpts ?? {};
     const currentSlug = fileData.slug;
     const resolvedEmbedMap = allFiles ? resolveEmbeds(data, currentSlug, allFiles) : void 0;
-    const resolvedImageMap = resolveImages(data);
+    const imagePaths = fileData.excalidrawImagePaths ?? {};
+    const resolvedImageMap = resolveImages(imagePaths, currentSlug);
     const renderCtx = {
       resolvedEmbeds: resolvedEmbedMap,
       resolvedImages: resolvedImageMap

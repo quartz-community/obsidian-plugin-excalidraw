@@ -28,6 +28,10 @@ export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts
       (fp: string) => fp.endsWith(".excalidraw.md") || fp.endsWith(".excalidraw"),
     );
 
+    const imageFiles = ctx.allFiles.filter((fp: string) =>
+      /\.(png|jpe?g|gif|svg|webp|avif|bmp|ico)$/i.test(fp),
+    );
+
     const virtualPages: VirtualPage[] = [];
 
     for (const filePath of excalidrawFiles) {
@@ -41,6 +45,21 @@ export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts
 
       const data = parseExcalidraw(content, filePath);
       if (!data) continue;
+
+      const resolvedImagePaths: Record<string, string> = {};
+      if (data.embeddedFiles) {
+        for (const [hash, wikilink] of Object.entries(data.embeddedFiles)) {
+          if (data.files[hash]?.dataURL) continue;
+          const targetName = wikilink.split("/").pop()?.toLowerCase() ?? "";
+          const match = imageFiles.find((fp: string) => {
+            const fpName = fp.split("/").pop()?.toLowerCase() ?? "";
+            return fpName === targetName;
+          });
+          if (match) {
+            resolvedImagePaths[hash] = match;
+          }
+        }
+      }
 
       const baseName =
         filePath
@@ -57,6 +76,7 @@ export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts
           frontmatter: { title: baseName, tags: ["excalidraw"] },
           excalidrawData: data,
           excalidrawOptions: opts,
+          excalidrawImagePaths: resolvedImagePaths,
         },
       });
     }

@@ -50,7 +50,19 @@ function initPanZoom(page) {
     svg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
   }
 
+  function isInsideEmbed(target) {
+    let el = target;
+    while (el && el !== container) {
+      if (el.classList && (el.classList.contains("excalidraw-embed-note") || el.classList.contains("excalidraw-embed-url"))) {
+        return true;
+      }
+      el = el.parentElement;
+    }
+    return false;
+  }
+
   function handleWheel(e) {
+    if (isInsideEmbed(e.target)) return;
     e.preventDefault();
     const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
     zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom + delta));
@@ -59,6 +71,7 @@ function initPanZoom(page) {
 
   function handleMouseDown(e) {
     if (e.button !== 0) return;
+    if (isInsideEmbed(e.target)) return;
     isDragging = true;
     startX = e.clientX - panX;
     startY = e.clientY - panY;

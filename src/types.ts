@@ -2,61 +2,97 @@ export type {
   BuildCtx,
   ChangeEvent,
   CSSResource,
+  FilePath,
+  FullSlug,
   JSResource,
+  PageGenerator,
+  PageMatcher,
   ProcessedContent,
+  QuartzComponent,
+  QuartzComponentConstructor,
+  QuartzComponentProps,
   QuartzEmitterPlugin,
   QuartzEmitterPluginInstance,
   QuartzFilterPlugin,
   QuartzFilterPluginInstance,
+  QuartzPageTypePlugin,
+  QuartzPageTypePluginInstance,
   QuartzPluginData,
   QuartzTransformerPlugin,
   QuartzTransformerPluginInstance,
   StaticResources,
-  PageMatcher,
-  PageGenerator,
   VirtualPage,
-  QuartzPageTypePlugin,
-  QuartzPageTypePluginInstance,
 } from "@quartz-community/types";
 
-export interface ExampleTransformerOptions {
-  /** Token used to highlight text, defaults to ==highlight== */
-  highlightToken: string;
-  /** Add a CSS class to all headings in the rendered HTML. */
-  headingClass: string;
-  /** Enable remark-gfm for tables/task lists. */
-  enableGfm: boolean;
-  /** Enable adding slug IDs to headings. */
-  addHeadingSlugs: boolean;
+export interface ExcalidrawPageOptions {
+  /** Enable client-side pan/zoom interaction on the SVG. */
+  enableInteraction?: boolean;
+  /** Theme for rendering: "auto" follows system preference. */
+  darkMode?: "auto" | "light" | "dark";
+  /** Padding around drawing content in the SVG (px). */
+  exportPadding?: number;
 }
 
-export interface ExampleFilterOptions {
-  /** Allow pages marked draft: true to publish. */
-  allowDrafts: boolean;
-  /** Exclude pages that contain any of these frontmatter tags. */
-  excludeTags: string[];
-  /** Exclude paths that start with any of these prefixes (relative to content root). */
-  excludePathPrefixes: string[];
+export interface ExcalidrawData {
+  type: "excalidraw";
+  version: number;
+  source?: string;
+  elements: ExcalidrawElement[];
+  appState: Partial<ExcalidrawAppState>;
+  files: Record<string, ExcalidrawFileData>;
+  /** Parsed from # Embedded files section — maps file hash → wikilink target */
+  embeddedFiles?: Record<string, string>;
 }
 
-export interface ExampleEmitterOptions {
-  /** Filename to emit at the site root. */
-  manifestSlug: string;
-  /** Whether to include the frontmatter block in the manifest. */
-  includeFrontmatter: boolean;
-  /** Extra metadata to write at the top level of the manifest. */
-  metadata: Record<string, unknown>;
-  /** Optional hook to transform the emitted manifest JSON string. */
-  transformManifest?: (json: string) => string;
-  /** Add a custom class to the emitted manifest <script> tag if used in HTML. */
-  manifestScriptClass?: string;
+export interface ExcalidrawElement {
+  id: string;
+  type: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  angle: number;
+  strokeColor: string;
+  backgroundColor: string;
+  fillStyle: string;
+  strokeWidth: number;
+  strokeStyle: string;
+  roughness: number;
+  opacity: number;
+  seed: number;
+  isDeleted: boolean;
+  roundness: { type: number; value?: number } | null;
+  points?: Array<[number, number]>;
+  text?: string;
+  rawText?: string;
+  fontSize?: number;
+  fontFamily?: number;
+  textAlign?: string;
+  verticalAlign?: string;
+  fileId?: string;
+  startBinding?: unknown;
+  endBinding?: unknown;
+  startArrowhead?: string | null;
+  endArrowhead?: string | null;
+  groupIds?: string[];
+  frameId?: string | null;
+  boundElements?: Array<{ id: string; type: string }> | null;
+  link?: string | null;
+  [key: string]: unknown;
 }
 
-export interface ExampleComponentOptions {
-  /** Text to prefix before the title */
-  prefix?: string;
-  /** Text to suffix after the title */
-  suffix?: string;
-  /** CSS class name to apply */
-  className?: string;
+export interface ExcalidrawAppState {
+  viewBackgroundColor: string;
+  exportBackground: boolean;
+  exportWithDarkMode: boolean;
+  gridSize?: number | null;
+  [key: string]: unknown;
+}
+
+export interface ExcalidrawFileData {
+  mimeType: string;
+  id: string;
+  dataURL: string;
+  created: number;
+  lastRetrieved?: number;
 }

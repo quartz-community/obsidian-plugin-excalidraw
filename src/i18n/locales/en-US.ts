@@ -1,7 +1,1 @@
-export default {
-  components: {
-    example: {
-      title: "Example",
-    },
-  },
-};
+export default {};

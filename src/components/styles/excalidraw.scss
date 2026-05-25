@@ -1,0 +1,451 @@
+// Core page layout
+.excalidraw-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  overflow: hidden;
+  user-select: none;
+  background-color: var(--light);
+}
+
+.excalidraw-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  background-color: var(--light);
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+:root {
+  --excalidraw-fg: #1e1e1e;
+  --excalidraw-bg: #ffffff;
+  --excalidraw-color-1e1e1e: #1e1e1e;
+  --excalidraw-color-000000: #000000;
+  --excalidraw-color-ffffff: #ffffff;
+  --excalidraw-color-343a40: #343a40;
+  --excalidraw-color-868e96: #868e96;
+  --excalidraw-color-ced4da: #ced4da;
+  --excalidraw-color-e9ecef: #e9ecef;
+  --excalidraw-color-f8f9fa: #f8f9fa;
+  --excalidraw-color-e03131: #e03131;
+  --excalidraw-color-fa5252: #fa5252;
+  --excalidraw-color-ff8787: #ff8787;
+  --excalidraw-color-ffc9c9: #ffc9c9;
+  --excalidraw-color-fff5f5: #fff5f5;
+  --excalidraw-color-c2255c: #c2255c;
+  --excalidraw-color-e64980: #e64980;
+  --excalidraw-color-f783ac: #f783ac;
+  --excalidraw-color-fcc2d7: #fcc2d7;
+  --excalidraw-color-fff0f6: #fff0f6;
+  --excalidraw-color-9c36b5: #9c36b5;
+  --excalidraw-color-be4bdb: #be4bdb;
+  --excalidraw-color-da77f2: #da77f2;
+  --excalidraw-color-eebefa: #eebefa;
+  --excalidraw-color-f8f0fc: #f8f0fc;
+  --excalidraw-color-6741d9: #6741d9;
+  --excalidraw-color-7950f2: #7950f2;
+  --excalidraw-color-9775fa: #9775fa;
+  --excalidraw-color-d0bfff: #d0bfff;
+  --excalidraw-color-f3f0ff: #f3f0ff;
+  --excalidraw-color-1971c2: #1971c2;
+  --excalidraw-color-228be6: #228be6;
+  --excalidraw-color-4dabf7: #4dabf7;
+  --excalidraw-color-a5d8ff: #a5d8ff;
+  --excalidraw-color-e7f5ff: #e7f5ff;
+  --excalidraw-color-0c8599: #0c8599;
+  --excalidraw-color-15aabf: #15aabf;
+  --excalidraw-color-3bc9db: #3bc9db;
+  --excalidraw-color-99e9f2: #99e9f2;
+  --excalidraw-color-e3fafc: #e3fafc;
+  --excalidraw-color-099268: #099268;
+  --excalidraw-color-12b886: #12b886;
+  --excalidraw-color-38d9a9: #38d9a9;
+  --excalidraw-color-96f2d7: #96f2d7;
+  --excalidraw-color-e6fcf5: #e6fcf5;
+  --excalidraw-color-2f9e44: #2f9e44;
+  --excalidraw-color-40c057: #40c057;
+  --excalidraw-color-69db7c: #69db7c;
+  --excalidraw-color-b2f2bb: #b2f2bb;
+  --excalidraw-color-ebfbee: #ebfbee;
+  --excalidraw-color-f08c00: #f08c00;
+  --excalidraw-color-fab005: #fab005;
+  --excalidraw-color-ffd43b: #ffd43b;
+  --excalidraw-color-ffec99: #ffec99;
+  --excalidraw-color-fff9db: #fff9db;
+  --excalidraw-color-e8590c: #e8590c;
+  --excalidraw-color-fd7e14: #fd7e14;
+  --excalidraw-color-ffa94d: #ffa94d;
+  --excalidraw-color-ffd8a8: #ffd8a8;
+  --excalidraw-color-fff4e6: #fff4e6;
+  --excalidraw-color-846358: #846358;
+  --excalidraw-color-a18072: #a18072;
+  --excalidraw-color-d2bab0: #d2bab0;
+  --excalidraw-color-eaddd7: #eaddd7;
+  --excalidraw-color-f8f1ee: #f8f1ee;
+}
+
+:root[saved-theme="dark"] {
+  --excalidraw-fg: #f1f1f1;
+  --excalidraw-bg: #111111;
+  --excalidraw-color-1e1e1e: #f1f1f1;
+  --excalidraw-color-000000: #eeeeee;
+  --excalidraw-color-ffffff: #111111;
+  --excalidraw-color-343a40: #d0ccc8;
+  --excalidraw-color-868e96: #7f776f;
+  --excalidraw-color-ced4da: #373128;
+  --excalidraw-color-e9ecef: #1e1914;
+  --excalidraw-color-f8f9fa: #0f0b07;
+  --excalidraw-color-e03131: #25d4d4;
+  --excalidraw-color-fa5252: #0db3b3;
+  --excalidraw-color-ff8787: #0e7e7e;
+  --excalidraw-color-ffc9c9: #0a3c3c;
+  --excalidraw-color-fff5f5: #020e0e;
+  --excalidraw-color-c2255c: #44dfa8;
+  --excalidraw-color-e64980: #20bb84;
+  --excalidraw-color-f783ac: #146057;
+  --excalidraw-color-fcc2d7: #0b412d;
+  --excalidraw-color-fff0f6: #03130d;
+  --excalidraw-color-9c36b5: #69ce50;
+  --excalidraw-color-be4bdb: #47b929;
+  --excalidraw-color-da77f2: #2b8d12;
+  --excalidraw-color-eebefa: #175008;
+  --excalidraw-color-f8f0fc: #0b1305;
+  --excalidraw-color-6741d9: #9dc32b;
+  --excalidraw-color-7950f2: #8bb412;
+  --excalidraw-color-9775fa: #6d8f09;
+  --excalidraw-color-d0bfff: #344504;
+  --excalidraw-color-f3f0ff: #101202;
+  --excalidraw-color-1971c2: #eb9342;
+  --excalidraw-color-228be6: #e2791e;
+  --excalidraw-color-4dabf7: #b7580c;
+  --excalidraw-color-a5d8ff: #5f2b04;
+  --excalidraw-color-e7f5ff: #1c0d02;
+  --excalidraw-color-0c8599: #f87f6c;
+  --excalidraw-color-15aabf: #ef5a45;
+  --excalidraw-color-3bc9db: #c83a29;
+  --excalidraw-color-99e9f2: #6b1a11;
+  --excalidraw-color-e3fafc: #200806;
+  --excalidraw-color-099268: #fb729d;
+  --excalidraw-color-12b886: #f24c7e;
+  --excalidraw-color-38d9a9: #cb2a5b;
+  --excalidraw-color-96f2d7: #6e112c;
+  --excalidraw-color-e6fcf5: #1d050e;
+  --excalidraw-color-2f9e44: #d566c0;
+  --excalidraw-color-40c057: #c444ad;
+  --excalidraw-color-69db7c: #9a2988;
+  --excalidraw-color-b2f2bb: #511249;
+  --excalidraw-color-ebfbee: #180716;
+  --excalidraw-color-f08c00: #1478ff;
+  --excalidraw-color-fab005: #094fff;
+  --excalidraw-color-ffd43b: #002fc8;
+  --excalidraw-color-ffec99: #00176a;
+  --excalidraw-color-fff9db: #000928;
+  --excalidraw-color-e8590c: #1caaf8;
+  --excalidraw-color-fd7e14: #0786f0;
+  --excalidraw-color-ffa94d: #045ab7;
+  --excalidraw-color-ffd8a8: #022b5b;
+  --excalidraw-color-fff4e6: #010d1d;
+  --excalidraw-color-846358: #80a1ab;
+  --excalidraw-color-a18072: #638491;
+  --excalidraw-color-d2bab0: #314953;
+  --excalidraw-color-eaddd7: #192629;
+  --excalidraw-color-f8f1ee: #0b1214;
+}
+
+// Zoom controls
+.excalidraw-controls {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+
+  button {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--lightgray);
+    border-radius: 6px;
+    background: var(--light);
+    color: var(--darkgray);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.1s ease;
+
+    &:hover {
+      background: var(--lightgray);
+    }
+  }
+}
+
+// Sidebar layout (matches canvas-page pattern)
+.page[data-frame="excalidraw"] {
+  --excalidraw-sidebar-width: 300px;
+}
+
+.page[data-frame="excalidraw"] .excalidraw-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding-left: 0;
+  transition: padding-left 0.2s ease;
+}
+
+.page[data-frame="excalidraw"] .excalidraw-stage {
+  width: 100%;
+  height: 100%;
+}
+
+.page[data-frame="excalidraw"] .excalidraw-sidebar {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: var(--excalidraw-sidebar-width);
+  box-sizing: border-box;
+  background: var(--light);
+  border-right: 1px solid var(--lightgray);
+  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.12);
+  overflow-y: hidden;
+  left: calc(-1 * var(--excalidraw-sidebar-width));
+  transition: left 0.25s ease;
+  z-index: 20;
+}
+
+.page[data-frame="excalidraw"] .excalidraw-sidebar-toggle {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  background: var(--light);
+  color: var(--darkgray);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  transition:
+    background 0.1s ease,
+    left 0.25s ease;
+
+  &:hover {
+    background: var(--lightgray);
+  }
+
+  svg {
+    pointer-events: none;
+  }
+}
+
+.page[data-frame="excalidraw"] .excalidraw-sidebar-icon-close {
+  display: none;
+}
+
+.page[data-frame="excalidraw"].excalidraw-sidebar-open .excalidraw-frame {
+  padding-left: var(--excalidraw-sidebar-width);
+}
+
+.page[data-frame="excalidraw"].excalidraw-sidebar-open .excalidraw-sidebar {
+  left: 0;
+}
+
+.page[data-frame="excalidraw"].excalidraw-sidebar-open .excalidraw-sidebar-toggle {
+  left: calc(var(--excalidraw-sidebar-width) + 12px);
+}
+
+.page[data-frame="excalidraw"].excalidraw-sidebar-open .excalidraw-sidebar-icon-open {
+  display: none;
+}
+
+.page[data-frame="excalidraw"].excalidraw-sidebar-open .excalidraw-sidebar-icon-close {
+  display: block;
+}
+
+@media (max-width: 800px) {
+  .page[data-frame="excalidraw"] {
+    --excalidraw-sidebar-width: calc(100vw - 56px);
+  }
+
+  .page[data-frame="excalidraw"].excalidraw-sidebar-open .excalidraw-frame {
+    padding-left: 0;
+  }
+
+  .page[data-frame="excalidraw"].excalidraw-sidebar-open .excalidraw-sidebar-toggle {
+    left: calc(var(--excalidraw-sidebar-width) + 12px);
+  }
+}
+
+// Sidebar content overrides
+.page[data-frame="excalidraw"] .excalidraw-sidebar {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .spacer {
+    display: none;
+  }
+
+  .explorer button.desktop-explorer,
+  .explorer button.mobile-explorer {
+    display: none !important;
+  }
+
+  .explorer {
+    order: initial;
+    overflow-y: hidden;
+    overflow: hidden;
+    flex: 1 1 0;
+    min-height: 0;
+    flex-shrink: initial;
+    align-self: initial;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .explorer .explorer-content,
+  .explorer.collapsed > .explorer-content,
+  .explorer:not(.collapsed) > .explorer-content {
+    position: static;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    max-height: 100%;
+    transform: none !important;
+    visibility: visible !important;
+    padding: 0;
+    overflow-y: auto;
+    z-index: auto;
+    background-color: transparent;
+  }
+
+  .explorer-content > .explorer-ul {
+    overscroll-behavior: auto;
+  }
+}
+
+// Embed styles
+.excalidraw-embed-note,
+.excalidraw-embed-url {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 2px solid var(--lightgray);
+  display: flex;
+  flex-direction: column;
+  background: var(--light);
+  box-sizing: border-box;
+}
+
+.excalidraw-embed-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--lightgray);
+  font-size: 13px;
+  font-family: var(--bodyFont, sans-serif);
+  color: var(--darkgray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+
+  a {
+    color: var(--darkgray);
+    text-decoration: none;
+  }
+}
+
+.excalidraw-embed-content {
+  flex: 1;
+  overflow: auto;
+  padding: 8px 12px;
+  font-family: var(--bodyFont, sans-serif);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--darkgray);
+  background: var(--light);
+}
+
+.excalidraw-embed-open-link {
+  display: block;
+  padding: 4px 0;
+  color: var(--secondary);
+  font-size: 12px;
+  text-decoration: none;
+  font-family: var(--bodyFont, sans-serif);
+}
+
+.excalidraw-embed-body {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dark);
+}
+
+.excalidraw-embed-missing {
+  color: var(--gray);
+  font-size: 12px;
+}
+
+.excalidraw-embed-iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+}
+
+// Transclude embed overrides
+.transclude {
+  .excalidraw-page {
+    height: auto;
+  }
+
+  .excalidraw-container {
+    height: auto;
+    min-height: 400px;
+  }
+
+  .excalidraw-controls {
+    position: absolute;
+  }
+}
+
+// Popover previews
+.popover-inner {
+  .excalidraw-page {
+    height: auto;
+  }
+
+  .excalidraw-container {
+    height: auto;
+    min-height: 200px;
+    max-height: 300px;
+  }
+
+  .excalidraw-controls {
+    display: none;
+  }
+}

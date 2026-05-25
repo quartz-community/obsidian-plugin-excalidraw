@@ -1,10 +1,6 @@
 import { QuartzComponent } from '@quartz-community/types';
+import { ExcalidrawPageOptions } from '../types.js';
 
-interface ExampleComponentOptions {
-    prefix?: string;
-    suffix?: string;
-    className?: string;
-}
-declare const _default: (opts?: ExampleComponentOptions) => QuartzComponent;
+declare const _default: (userOpts?: ExcalidrawPageOptions) => QuartzComponent;
 
-export { _default as ExampleComponent, type ExampleComponentOptions };
+export { _default as ExcalidrawBody };

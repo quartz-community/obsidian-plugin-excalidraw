@@ -14,7 +14,7 @@ import {
 import { toHtml } from "hast-util-to-html";
 import type { ExcalidrawData, ExcalidrawPageOptions } from "../types";
 import { renderToSvg } from "../renderer";
-import type { ResolvedEmbed, RenderContext } from "../renderer";
+import type { ResolvedEmbed, RenderContext, EmbedOverlay } from "../renderer";
 import style from "./styles/excalidraw.scss";
 // @ts-expect-error inline script import handled by bundler
 import script from "./scripts/excalidraw.inline.ts";
@@ -83,10 +83,7 @@ function resolveEmbeds(
   return result;
 }
 
-function resolveImages(
-  data: ExcalidrawData,
-  currentSlug: FullSlug,
-): Record<string, string> {
+function resolveImages(data: ExcalidrawData, currentSlug: FullSlug): Record<string, string> {
   const result: Record<string, string> = {};
   if (!data.embeddedFiles) return result;
 
@@ -104,6 +101,58 @@ function resolveImages(
   return result;
 }
 
+function renderOverlay(overlay: EmbedOverlay): unknown {
+  const label = overlay.link
+    .replace(/^\[\[/, "")
+    .replace(/\]\]$/, "")
+    .replace(/^https?:\/\//, "");
+  const truncatedLabel = label.length > 50 ? label.slice(0, 47) + "..." : label;
+
+  if (overlay.isWikilink) {
+    const noteContent = overlay.resolved
+      ? `<a href="${overlay.resolved.href}" class="excalidraw-embed-open-link">Open note →</a><div class="excalidraw-embed-body">${overlay.resolved.html}</div>`
+      : `<span class="excalidraw-embed-missing">Note not found</span>`;
+
+    return (
+      <div
+        class="excalidraw-overlay excalidraw-embed-note"
+        data-overlay-id={overlay.id}
+        data-x={overlay.x}
+        data-y={overlay.y}
+        data-w={overlay.width}
+        data-h={overlay.height}
+      >
+        <div class="excalidraw-embed-header">{"📄 " + truncatedLabel}</div>
+        <div class="excalidraw-embed-content" dangerouslySetInnerHTML={{ __html: noteContent }} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      class="excalidraw-overlay excalidraw-embed-url"
+      data-overlay-id={overlay.id}
+      data-x={overlay.x}
+      data-y={overlay.y}
+      data-w={overlay.width}
+      data-h={overlay.height}
+    >
+      <div class="excalidraw-embed-header">
+        <a href={overlay.link} target="_blank" rel="noopener noreferrer">
+          {"🔗 " + truncatedLabel}
+        </a>
+      </div>
+      <iframe
+        src={overlay.link}
+        class="excalidraw-embed-iframe"
+        sandbox="allow-scripts allow-same-origin allow-popups"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+      />
+    </div>
+  );
+}
+
 export default ((userOpts?: ExcalidrawPageOptions) => {
   const Component: QuartzComponent = (props: QuartzComponentProps) => {
     const { fileData, allFiles } = props;
@@ -117,7 +166,7 @@ export default ((userOpts?: ExcalidrawPageOptions) => {
       resolvedEmbeds: resolvedEmbedMap,
       resolvedImages: resolvedImageMap,
     };
-    const svgContent = renderToSvg(data, options, renderCtx);
+    const result = renderToSvg(data, options, renderCtx);
 
     return (
       <article
@@ -136,7 +185,16 @@ export default ((userOpts?: ExcalidrawPageOptions) => {
             ⟲
           </button>
         </div>
-        <div class="excalidraw-container" dangerouslySetInnerHTML={{ __html: svgContent }} />
+        <div class="excalidraw-container" dangerouslySetInnerHTML={{ __html: result.svg }} />
+        <div
+          class="excalidraw-overlays"
+          data-viewbox-w={result.viewBox.width}
+          data-viewbox-h={result.viewBox.height}
+          data-offset-x={result.viewBox.offsetX}
+          data-offset-y={result.viewBox.offsetY}
+        >
+          {result.overlays.map((o) => renderOverlay(o))}
+        </div>
         {options.enableInteraction !== false && (
           <script
             type="application/json"

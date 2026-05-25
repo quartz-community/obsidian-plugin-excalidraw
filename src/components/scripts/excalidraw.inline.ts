@@ -39,6 +39,8 @@ function initPanZoom(page) {
 
   container.style.backgroundColor = "var(--excalidraw-bg, var(--light))";
 
+  var overlaysContainer = page.querySelector(".excalidraw-overlays");
+
   let zoom = 1;
   let panX = 0;
   let panY = 0;
@@ -46,38 +48,60 @@ function initPanZoom(page) {
   let startX = 0;
   let startY = 0;
 
-  function applyTransform() {
-    svg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
-  }
+  function positionOverlays() {
+    if (!overlaysContainer) return;
+    var overlays = overlaysContainer.querySelectorAll(".excalidraw-overlay");
+    if (overlays.length === 0) return;
 
-  function isInsideEmbed(target) {
-    if (!target) return false;
-    let el = target;
-    while (el && el !== container) {
-      if (el.tagName === "foreignObject" || el.tagName === "FOREIGNOBJECT") return true;
-      if (el.classList && (el.classList.contains("excalidraw-embed-note") || el.classList.contains("excalidraw-embed-url"))) return true;
-      el = el.parentElement || el.parentNode;
+    var vbW = parseFloat(overlaysContainer.getAttribute("data-viewbox-w")) || 1;
+    var vbH = parseFloat(overlaysContainer.getAttribute("data-viewbox-h")) || 1;
+    var offX = parseFloat(overlaysContainer.getAttribute("data-offset-x")) || 0;
+    var offY = parseFloat(overlaysContainer.getAttribute("data-offset-y")) || 0;
+
+    var rect = container.getBoundingClientRect();
+    var containerW = rect.width;
+    var containerH = rect.height;
+
+    var svgScale = Math.min(containerW / vbW, containerH / vbH) * zoom;
+    var svgOffsetX = (containerW - vbW * svgScale / zoom) / 2 + panX;
+    var svgOffsetY = (containerH - vbH * svgScale / zoom) / 2 + panY;
+
+    for (var i = 0; i < overlays.length; i++) {
+      var el = overlays[i];
+      var ex = parseFloat(el.getAttribute("data-x")) || 0;
+      var ey = parseFloat(el.getAttribute("data-y")) || 0;
+      var ew = parseFloat(el.getAttribute("data-w")) || 0;
+      var eh = parseFloat(el.getAttribute("data-h")) || 0;
+
+      var left = svgOffsetX + (ex + offX) * svgScale;
+      var top = svgOffsetY + (ey + offY) * svgScale;
+      var width = ew * svgScale;
+      var height = eh * svgScale;
+
+      el.style.left = left + "px";
+      el.style.top = top + "px";
+      el.style.width = width + "px";
+      el.style.height = height + "px";
+      el.style.display = "flex";
     }
-    return false;
   }
 
-  var embeds = container.querySelectorAll(".excalidraw-embed-note, .excalidraw-embed-url");
-  for (var i = 0; i < embeds.length; i++) {
-    embeds[i].addEventListener("wheel", function(e) { e.stopPropagation(); }, { passive: true });
-    embeds[i].addEventListener("mousedown", function(e) { e.stopPropagation(); });
+  positionOverlays();
+
+  function applyTransform() {
+    svg.style.transform = "translate(" + panX + "px, " + panY + "px) scale(" + zoom + ")";
+    positionOverlays();
   }
 
   function handleWheel(e) {
-    if (isInsideEmbed(e.target)) return;
     e.preventDefault();
-    const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+    var delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
     zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom + delta));
     applyTransform();
   }
 
   function handleMouseDown(e) {
     if (e.button !== 0) return;
-    if (isInsideEmbed(e.target)) return;
     isDragging = true;
     startX = e.clientX - panX;
     startY = e.clientY - panY;
@@ -96,26 +120,26 @@ function initPanZoom(page) {
     container.style.cursor = "grab";
   }
 
-  const zoomInBtn = page.querySelector(".excalidraw-zoom-in");
-  const zoomOutBtn = page.querySelector(".excalidraw-zoom-out");
-  const resetBtn = page.querySelector(".excalidraw-reset");
+  var zoomInBtn = page.querySelector(".excalidraw-zoom-in");
+  var zoomOutBtn = page.querySelector(".excalidraw-zoom-out");
+  var resetBtn = page.querySelector(".excalidraw-reset");
 
   if (zoomInBtn) {
-    zoomInBtn.addEventListener("click", () => {
+    zoomInBtn.addEventListener("click", function() {
       zoom = Math.min(MAX_ZOOM, zoom + ZOOM_STEP);
       applyTransform();
     });
   }
 
   if (zoomOutBtn) {
-    zoomOutBtn.addEventListener("click", () => {
+    zoomOutBtn.addEventListener("click", function() {
       zoom = Math.max(MIN_ZOOM, zoom - ZOOM_STEP);
       applyTransform();
     });
   }
 
   if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
+    resetBtn.addEventListener("click", function() {
       zoom = 1;
       panX = 0;
       panY = 0;
@@ -128,7 +152,7 @@ function initPanZoom(page) {
   document.addEventListener("mousemove", handleMouseMove);
   document.addEventListener("mouseup", handleMouseUp);
 
-  window.addCleanup(() => {
+  window.addCleanup(function() {
     container.removeEventListener("wheel", handleWheel);
     container.removeEventListener("mousedown", handleMouseDown);
     document.removeEventListener("mousemove", handleMouseMove);

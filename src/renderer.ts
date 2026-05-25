@@ -25,6 +25,23 @@ export interface ResolvedEmbed {
   href: string;
 }
 
+export interface EmbedOverlay {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  link: string;
+  isWikilink: boolean;
+  resolved?: ResolvedEmbed;
+}
+
+export interface RenderResult {
+  svg: string;
+  overlays: EmbedOverlay[];
+  viewBox: { width: number; height: number; offsetX: number; offsetY: number };
+}
+
 export interface RenderContext {
   resolvedEmbeds?: Record<string, ResolvedEmbed>;
   resolvedImages?: Record<string, string>;
@@ -34,10 +51,14 @@ export function renderToSvg(
   data: ExcalidrawData,
   opts: ExcalidrawPageOptions = {},
   ctx?: RenderContext,
-): string {
+): RenderResult {
   const elements = data.elements.filter((el) => !el.isDeleted);
   if (elements.length === 0) {
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>';
+    return {
+      svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>',
+      overlays: [],
+      viewBox: { width: 100, height: 100, offsetX: 0, offsetY: 0 },
+    };
   }
 
   const padding = opts.exportPadding ?? 20;
@@ -49,9 +70,24 @@ export function renderToSvg(
 
   const bgColor = resolveBgColor(data, opts);
 
-  const renderedElements = elements
-    .map((el) => renderElement(el, data, ctx))
-    .filter(Boolean);
+  const overlays: EmbedOverlay[] = [];
+  const embeddables = elements.filter((el) => el.type === "embeddable" || el.type === "iframe");
+  for (const el of embeddables) {
+    const link = (el.link as string) ?? "";
+    const isWikilink = link.startsWith("[[");
+    overlays.push({
+      id: el.id,
+      x: el.x,
+      y: el.y,
+      width: el.width,
+      height: el.height,
+      link,
+      isWikilink,
+      resolved: ctx?.resolvedEmbeds?.[el.id],
+    });
+  }
+
+  const renderedElements = elements.map((el) => renderElement(el, data, ctx)).filter(Boolean);
 
   const parts = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" data-bg-color="${escapeAttr(bgColor ?? "#ffffff")}">`,
@@ -62,7 +98,11 @@ export function renderToSvg(
     "</svg>",
   ];
 
-  return parts.filter(Boolean).join("\n");
+  return {
+    svg: parts.filter(Boolean).join("\n"),
+    overlays,
+    viewBox: { width, height, offsetX, offsetY },
+  };
 }
 
 function resolveBgColor(data: ExcalidrawData, opts: ExcalidrawPageOptions): string | null {
@@ -78,11 +118,7 @@ function resolveBgColor(data: ExcalidrawData, opts: ExcalidrawPageOptions): stri
   return rawBg;
 }
 
-function renderElement(
-  el: ExcalidrawElement,
-  data: ExcalidrawData,
-  ctx?: RenderContext,
-): string {
+function renderElement(el: ExcalidrawElement, data: ExcalidrawData, ctx?: RenderContext): string {
   const inner = renderElementInner(el, data, ctx);
   if (!inner) return "";
 
@@ -129,7 +165,7 @@ function renderElementInner(
       return renderFrame(el);
     case "embeddable":
     case "iframe":
-      return renderEmbeddable(el, ctx?.resolvedEmbeds);
+      return renderEmbeddable(el);
     default:
       return "";
   }
@@ -461,45 +497,8 @@ function renderFrame(el: ExcalidrawElement): string {
   return `<rect x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" fill="none" stroke="#aaaaaa" stroke-width="1" stroke-dasharray="5 5" />`;
 }
 
-function renderEmbeddable(
-  el: ExcalidrawElement,
-  resolvedEmbeds?: Record<string, ResolvedEmbed>,
-): string {
-  const link = (el.link as string) ?? "";
-  const isWikilink = link.startsWith("[[");
-  const label = link
-    .replace(/^\[\[/, "")
-    .replace(/\]\]$/, "")
-    .replace(/^https?:\/\//, "");
-  const truncatedLabel = label.length > 50 ? label.slice(0, 47) + "..." : label;
-
-  const resolved = resolvedEmbeds?.[el.id];
-
-  if (isWikilink) {
-    const noteContent = resolved
-      ? `<a href="${escapeAttr(resolved.href)}" class="excalidraw-embed-open-link">Open note →</a><div class="excalidraw-embed-body">${resolved.html}</div>`
-      : `<span class="excalidraw-embed-missing">Note not found</span>`;
-
-    return [
-      `<foreignObject x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}">`,
-      `<div xmlns="http://www.w3.org/1999/xhtml" class="excalidraw-embed-note">`,
-      `<div class="excalidraw-embed-header">📄 ${escapeXml(truncatedLabel)}</div>`,
-      `<div class="excalidraw-embed-content">${noteContent}</div>`,
-      `</div>`,
-      `</foreignObject>`,
-    ].join("\n");
-  }
-
-  return [
-    `<foreignObject x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}">`,
-    `<div xmlns="http://www.w3.org/1999/xhtml" class="excalidraw-embed-url">`,
-    `<div class="excalidraw-embed-header">`,
-    `<a href="${escapeAttr(link)}" target="_blank" rel="noopener noreferrer">🔗 ${escapeXml(truncatedLabel)}</a>`,
-    `</div>`,
-    `<iframe src="${escapeAttr(link)}" class="excalidraw-embed-iframe" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy" referrerpolicy="no-referrer"></iframe>`,
-    `</div>`,
-    `</foreignObject>`,
-  ].join("\n");
+function renderEmbeddable(el: ExcalidrawElement): string {
+  return `<rect x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" fill="var(--excalidraw-bg, #f8f9fa)" stroke="var(--excalidraw-color-ced4da, #dee2e6)" stroke-width="2" rx="8" ry="8" data-embed-id="${el.id}" />`;
 }
 
 function drawableToSvg(drawable: ReturnType<typeof gen.rectangle>): string {

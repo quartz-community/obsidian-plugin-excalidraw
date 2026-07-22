@@ -33,9 +33,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// node_modules/lz-string/libs/lz-string.js
+// ../../node_modules/.pnpm/lz-string@1.5.0/node_modules/lz-string/libs/lz-string.js
 var require_lz_string = __commonJS({
-  "node_modules/lz-string/libs/lz-string.js"(exports$1, module) {
+  "../../node_modules/.pnpm/lz-string@1.5.0/node_modules/lz-string/libs/lz-string.js"(exports, module) {
     var LZString2 = (function() {
       var f5 = String.fromCharCode;
       var keyStrBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
@@ -489,7 +489,7 @@ var require_lz_string = __commonJS({
   }
 });
 
-// node_modules/@quartz-community/utils/dist/path.js
+// ../utils/dist/path.js
 function isRelativeURL(s4) {
   const validStart = /^\.{1,2}/.test(s4);
   const validEnding = !endsWith(s4, "index");
@@ -552,7 +552,7 @@ function getFileExtension(s4) {
   return s4.match(/\.[A-Za-z0-9]+$/)?.[0];
 }
 function pathToRoot(slug2) {
-  let rootPath = slug2.split("/").filter((x4) => x4 !== "").slice(0, -1).map((_3) => "..").join("/");
+  let rootPath = slug2.split("/").filter((x4) => x4 !== "").slice(0, -1).map((_4) => "..").join("/");
   if (rootPath.length === 0) {
     rootPath = ".";
   }
@@ -716,7 +716,7 @@ function normalizeData(data) {
   };
 }
 
-// node_modules/html-void-elements/index.js
+// ../../node_modules/.pnpm/html-void-elements@3.0.0/node_modules/html-void-elements/index.js
 var htmlVoidElements = [
   "area",
   "base",
@@ -740,7 +740,7 @@ var htmlVoidElements = [
   "wbr"
 ];
 
-// node_modules/property-information/lib/util/schema.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/util/schema.js
 var Schema = class {
   /**
    * @param {SchemaType['property']} property
@@ -764,7 +764,7 @@ Schema.prototype.normal = {};
 Schema.prototype.property = {};
 Schema.prototype.space = void 0;
 
-// node_modules/property-information/lib/util/merge.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/util/merge.js
 function merge(definitions, space) {
   const property = {};
   const normal = {};
@@ -775,12 +775,12 @@ function merge(definitions, space) {
   return new Schema(property, normal, space);
 }
 
-// node_modules/property-information/lib/normalize.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/normalize.js
 function normalize(value) {
   return value.toLowerCase();
 }
 
-// node_modules/property-information/lib/util/info.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/util/info.js
 var Info = class {
   /**
    * @param {string} property
@@ -808,7 +808,7 @@ Info.prototype.property = "";
 Info.prototype.spaceSeparated = false;
 Info.prototype.space = void 0;
 
-// node_modules/property-information/lib/util/types.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/util/types.js
 var types_exports = {};
 __export(types_exports, {
   boolean: () => boolean,
@@ -831,7 +831,7 @@ function increment() {
   return 2 ** ++powers;
 }
 
-// node_modules/property-information/lib/util/defined-info.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/util/defined-info.js
 var checks = (
   /** @type {ReadonlyArray<keyof typeof types>} */
   Object.keys(types_exports)
@@ -869,7 +869,7 @@ function mark(values, key2, value) {
   }
 }
 
-// node_modules/property-information/lib/util/create.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/util/create.js
 function create(definition) {
   const properties = {};
   const normals = {};
@@ -890,7 +890,7 @@ function create(definition) {
   return new Schema(properties, normals, definition.space);
 }
 
-// node_modules/property-information/lib/aria.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/aria.js
 var aria = create({
   properties: {
     ariaActiveDescendant: null,
@@ -943,22 +943,22 @@ var aria = create({
     ariaValueText: null,
     role: null
   },
-  transform(_3, property) {
+  transform(_4, property) {
     return property === "role" ? property : "aria-" + property.slice(4).toLowerCase();
   }
 });
 
-// node_modules/property-information/lib/util/case-sensitive-transform.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/util/case-sensitive-transform.js
 function caseSensitiveTransform(attributes, attribute) {
   return attribute in attributes ? attributes[attribute] : attribute;
 }
 
-// node_modules/property-information/lib/util/case-insensitive-transform.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/util/case-insensitive-transform.js
 function caseInsensitiveTransform(attributes, property) {
   return caseSensitiveTransform(attributes, property.toLowerCase());
 }
 
-// node_modules/property-information/lib/html.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/html.js
 var html = create({
   attributes: {
     acceptcharset: "accept-charset",
@@ -978,6 +978,7 @@ var html = create({
     allowFullScreen: boolean,
     allowPaymentRequest: boolean,
     allowUserMedia: boolean,
+    alpha: boolean,
     alt: null,
     as: null,
     async: boolean,
@@ -991,8 +992,12 @@ var html = create({
     checked: boolean,
     cite: null,
     className: spaceSeparated,
+    closedBy: null,
+    colorSpace: null,
     cols: number,
-    colSpan: null,
+    colSpan: number,
+    command: null,
+    commandFor: null,
     content: null,
     contentEditable: booleanish,
     controls: boolean,
@@ -1172,8 +1177,10 @@ var html = create({
     seamless: boolean,
     selected: boolean,
     shadowRootClonable: boolean,
+    shadowRootCustomElementRegistry: boolean,
     shadowRootDelegatesFocus: boolean,
     shadowRootMode: null,
+    shadowRootSerializable: boolean,
     shape: null,
     size: number,
     sizes: null,
@@ -1310,8 +1317,11 @@ var html = create({
     allowTransparency: null,
     autoCorrect: null,
     autoSave: null,
+    credentialless: boolean,
     disablePictureInPicture: boolean,
     disableRemotePlayback: boolean,
+    exportParts: commaSeparated,
+    part: spaceSeparated,
     prefix: null,
     property: null,
     results: number,
@@ -1322,7 +1332,7 @@ var html = create({
   transform: caseInsensitiveTransform
 });
 
-// node_modules/property-information/lib/svg.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/svg.js
 var svg = create({
   attributes: {
     accentHeight: "accent-height",
@@ -1365,6 +1375,7 @@ var svg = create({
     markerEnd: "marker-end",
     markerMid: "marker-mid",
     markerStart: "marker-start",
+    maskType: "mask-type",
     navDown: "nav-down",
     navDownLeft: "nav-down-left",
     navDownRight: "nav-down-right",
@@ -1635,6 +1646,7 @@ var svg = create({
     markerWidth: null,
     mask: null,
     maskContentUnits: null,
+    maskType: null,
     maskUnits: null,
     mathematical: null,
     max: null,
@@ -1884,7 +1896,7 @@ var svg = create({
   transform: caseSensitiveTransform
 });
 
-// node_modules/property-information/lib/xlink.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/xlink.js
 var xlink = create({
   properties: {
     xLinkActuate: null,
@@ -1896,12 +1908,12 @@ var xlink = create({
     xLinkType: null
   },
   space: "xlink",
-  transform(_3, property) {
+  transform(_4, property) {
     return "xlink:" + property.slice(5).toLowerCase();
   }
 });
 
-// node_modules/property-information/lib/xmlns.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/xmlns.js
 var xmlns = create({
   attributes: { xmlnsxlink: "xmlns:xlink" },
   properties: { xmlnsXLink: null, xmlns: null },
@@ -1909,16 +1921,16 @@ var xmlns = create({
   transform: caseInsensitiveTransform
 });
 
-// node_modules/property-information/lib/xml.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/xml.js
 var xml = create({
   properties: { xmlBase: null, xmlLang: null, xmlSpace: null },
   space: "xml",
-  transform(_3, property) {
+  transform(_4, property) {
     return "xml:" + property.slice(3).toLowerCase();
   }
 });
 
-// node_modules/property-information/lib/find.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/lib/find.js
 var cap = /[A-Z]/g;
 var dash = /-[a-z]/g;
 var valid = /^data[-\w.:]+$/i;
@@ -1954,11 +1966,11 @@ function camelcase($0) {
   return $0.charAt(1).toUpperCase();
 }
 
-// node_modules/property-information/index.js
+// ../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information/index.js
 var html2 = merge([aria, html, xlink, xmlns, xml], "html");
 var svg2 = merge([aria, svg, xlink, xmlns, xml], "svg");
 
-// node_modules/zwitch/index.js
+// ../../node_modules/.pnpm/zwitch@2.0.4/node_modules/zwitch/index.js
 var own2 = {}.hasOwnProperty;
 function zwitch(key2, options) {
   const settings = options || {};
@@ -1979,7 +1991,7 @@ function zwitch(key2, options) {
   return one2;
 }
 
-// node_modules/stringify-entities/lib/core.js
+// ../../node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities/lib/core.js
 var defaultSubsetRegex = /["&'<>`]/g;
 var surrogatePairsRegex = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
 var controlCharactersRegex = (
@@ -2029,21 +2041,21 @@ function charactersToExpression(subset) {
   return new RegExp("(?:" + groups.join("|") + ")", "g");
 }
 
-// node_modules/stringify-entities/lib/util/to-hexadecimal.js
+// ../../node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities/lib/util/to-hexadecimal.js
 var hexadecimalRegex = /[\dA-Fa-f]/;
 function toHexadecimal(code, next, omit) {
   const value = "&#x" + code.toString(16).toUpperCase();
   return omit && next && !hexadecimalRegex.test(String.fromCharCode(next)) ? value : value + ";";
 }
 
-// node_modules/stringify-entities/lib/util/to-decimal.js
+// ../../node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities/lib/util/to-decimal.js
 var decimalRegex = /\d/;
 function toDecimal(code, next, omit) {
   const value = "&#" + String(code);
   return omit && next && !decimalRegex.test(String.fromCharCode(next)) ? value : value + ";";
 }
 
-// node_modules/character-entities-legacy/index.js
+// ../../node_modules/.pnpm/character-entities-legacy@3.0.0/node_modules/character-entities-legacy/index.js
 var characterEntitiesLegacy = [
   "AElig",
   "AMP",
@@ -2153,7 +2165,7 @@ var characterEntitiesLegacy = [
   "yuml"
 ];
 
-// node_modules/character-entities-html4/index.js
+// ../../node_modules/.pnpm/character-entities-html4@2.1.0/node_modules/character-entities-html4/index.js
 var characterEntitiesHtml4 = {
   nbsp: "\xA0",
   iexcl: "\xA1",
@@ -2409,7 +2421,7 @@ var characterEntitiesHtml4 = {
   euro: "\u20AC"
 };
 
-// node_modules/stringify-entities/lib/constant/dangerous.js
+// ../../node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities/lib/constant/dangerous.js
 var dangerous = [
   "cent",
   "copy",
@@ -2421,7 +2433,7 @@ var dangerous = [
   "times"
 ];
 
-// node_modules/stringify-entities/lib/util/to-named.js
+// ../../node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities/lib/util/to-named.js
 var own3 = {}.hasOwnProperty;
 var characters = {};
 var key;
@@ -2444,7 +2456,7 @@ function toNamed(code, next, omit, attribute) {
   return "";
 }
 
-// node_modules/stringify-entities/lib/util/format-smart.js
+// ../../node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities/lib/util/format-smart.js
 function formatSmart(code, next, options) {
   let numeric = toHexadecimal(code, next, options.omitOptionalSemicolons);
   let named;
@@ -2465,12 +2477,12 @@ function formatSmart(code, next, options) {
   return named && (!options.useShortestReferences || named.length < numeric.length) ? named : numeric;
 }
 
-// node_modules/stringify-entities/lib/index.js
+// ../../node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities/lib/index.js
 function stringifyEntities(value, options) {
   return core(value, Object.assign({ format: formatSmart }, options));
 }
 
-// node_modules/hast-util-to-html/lib/handle/comment.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/handle/comment.js
 var htmlCommentRegex = /^>|^->|<!--|-->|--!>|<!-$/g;
 var bogusCommentEntitySubset = [">"];
 var commentEntitySubset = ["<", ">"];
@@ -2491,12 +2503,12 @@ function comment(node, _1, _22, state) {
   }
 }
 
-// node_modules/hast-util-to-html/lib/handle/doctype.js
-function doctype(_1, _22, _3, state) {
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/handle/doctype.js
+function doctype(_1, _22, _32, state) {
   return "<!" + (state.settings.upperDoctype ? "DOCTYPE" : "doctype") + (state.settings.tightDoctype ? "" : " ") + "html>";
 }
 
-// node_modules/ccount/index.js
+// ../../node_modules/.pnpm/ccount@2.0.1/node_modules/ccount/index.js
 function ccount(value, character) {
   const source = String(value);
   if (typeof character !== "string") {
@@ -2511,7 +2523,7 @@ function ccount(value, character) {
   return count;
 }
 
-// node_modules/comma-separated-tokens/index.js
+// ../../node_modules/.pnpm/comma-separated-tokens@2.0.3/node_modules/comma-separated-tokens/index.js
 function stringify(values, options) {
   const settings = options || {};
   const input = values[values.length - 1] === "" ? [...values, ""] : values;
@@ -2520,12 +2532,12 @@ function stringify(values, options) {
   ).trim();
 }
 
-// node_modules/space-separated-tokens/index.js
+// ../../node_modules/.pnpm/space-separated-tokens@2.0.2/node_modules/space-separated-tokens/index.js
 function stringify2(values) {
   return values.join(" ").trim();
 }
 
-// node_modules/hast-util-whitespace/lib/index.js
+// ../../node_modules/.pnpm/hast-util-whitespace@3.0.0/node_modules/hast-util-whitespace/lib/index.js
 var re = /[ \t\n\f\r]/g;
 function whitespace(thing) {
   return typeof thing === "object" ? thing.type === "text" ? empty(thing.value) : false : empty(thing);
@@ -2534,7 +2546,7 @@ function empty(value) {
   return value.replace(re, "") === "";
 }
 
-// node_modules/hast-util-to-html/lib/omission/util/siblings.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/omission/util/siblings.js
 var siblingAfter = siblings(1);
 var siblingBefore = siblings(-1);
 var emptyChildren = [];
@@ -2554,7 +2566,7 @@ function siblings(increment2) {
   }
 }
 
-// node_modules/hast-util-to-html/lib/omission/omission.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/omission/omission.js
 var own4 = {}.hasOwnProperty;
 function omission(handlers) {
   return omit;
@@ -2563,7 +2575,7 @@ function omission(handlers) {
   }
 }
 
-// node_modules/hast-util-to-html/lib/omission/closing.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/omission/closing.js
 var closing = omission({
   body,
   caption: headOrColgroupOrCaption,
@@ -2585,72 +2597,72 @@ var closing = omission({
   thead,
   tr
 });
-function headOrColgroupOrCaption(_3, index, parent) {
+function headOrColgroupOrCaption(_4, index, parent) {
   const next = siblingAfter(parent, index, true);
   return !next || next.type !== "comment" && !(next.type === "text" && whitespace(next.value.charAt(0)));
 }
-function html3(_3, index, parent) {
+function html3(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type !== "comment";
 }
-function body(_3, index, parent) {
+function body(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type !== "comment";
 }
-function p(_3, index, parent) {
+function p(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return next ? next.type === "element" && (next.tagName === "address" || next.tagName === "article" || next.tagName === "aside" || next.tagName === "blockquote" || next.tagName === "details" || next.tagName === "div" || next.tagName === "dl" || next.tagName === "fieldset" || next.tagName === "figcaption" || next.tagName === "figure" || next.tagName === "footer" || next.tagName === "form" || next.tagName === "h1" || next.tagName === "h2" || next.tagName === "h3" || next.tagName === "h4" || next.tagName === "h5" || next.tagName === "h6" || next.tagName === "header" || next.tagName === "hgroup" || next.tagName === "hr" || next.tagName === "main" || next.tagName === "menu" || next.tagName === "nav" || next.tagName === "ol" || next.tagName === "p" || next.tagName === "pre" || next.tagName === "section" || next.tagName === "table" || next.tagName === "ul") : !parent || // Confusing parent.
   !(parent.type === "element" && (parent.tagName === "a" || parent.tagName === "audio" || parent.tagName === "del" || parent.tagName === "ins" || parent.tagName === "map" || parent.tagName === "noscript" || parent.tagName === "video"));
 }
-function li(_3, index, parent) {
+function li(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && next.tagName === "li";
 }
-function dt(_3, index, parent) {
+function dt(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return Boolean(
     next && next.type === "element" && (next.tagName === "dt" || next.tagName === "dd")
   );
 }
-function dd(_3, index, parent) {
+function dd(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "dt" || next.tagName === "dd");
 }
-function rubyElement(_3, index, parent) {
+function rubyElement(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "rp" || next.tagName === "rt");
 }
-function optgroup(_3, index, parent) {
+function optgroup(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && next.tagName === "optgroup";
 }
-function option(_3, index, parent) {
+function option(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "option" || next.tagName === "optgroup");
 }
-function thead(_3, index, parent) {
+function thead(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return Boolean(
     next && next.type === "element" && (next.tagName === "tbody" || next.tagName === "tfoot")
   );
 }
-function tbody(_3, index, parent) {
+function tbody(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "tbody" || next.tagName === "tfoot");
 }
-function tfoot(_3, index, parent) {
+function tfoot(_4, index, parent) {
   return !siblingAfter(parent, index);
 }
-function tr(_3, index, parent) {
+function tr(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && next.tagName === "tr";
 }
-function cells(_3, index, parent) {
+function cells(_4, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "td" || next.tagName === "th");
 }
 
-// node_modules/hast-util-to-html/lib/omission/opening.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/omission/opening.js
 var opening = omission({
   body: body2,
   colgroup,
@@ -2694,7 +2706,7 @@ function tbody2(node, index, parent) {
   return Boolean(head2 && head2.type === "element" && head2.tagName === "tr");
 }
 
-// node_modules/hast-util-to-html/lib/handle/element.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/handle/element.js
 var constants = {
   // See: <https://html.spec.whatwg.org/#attribute-name-state>.
   name: [
@@ -2821,9 +2833,9 @@ function serializeAttribute(state, key2, value) {
   return name + (result ? "=" + result : result);
 }
 
-// node_modules/hast-util-to-html/lib/handle/text.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/handle/text.js
 var textEntitySubset = ["<", "&"];
-function text(node, _3, parent, state) {
+function text(node, _4, parent, state) {
   return parent && parent.type === "element" && (parent.tagName === "script" || parent.tagName === "style") ? node.value : stringifyEntities(
     node.value,
     Object.assign({}, state.settings.characterReferences, {
@@ -2832,17 +2844,17 @@ function text(node, _3, parent, state) {
   );
 }
 
-// node_modules/hast-util-to-html/lib/handle/raw.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/handle/raw.js
 function raw(node, index, parent, state) {
   return state.settings.allowDangerousHtml ? node.value : text(node, index, parent, state);
 }
 
-// node_modules/hast-util-to-html/lib/handle/root.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/handle/root.js
 function root(node, _1, _22, state) {
   return state.all(node);
 }
 
-// node_modules/hast-util-to-html/lib/handle/index.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/handle/index.js
 var handle = zwitch("type", {
   invalid,
   unknown,
@@ -2859,7 +2871,7 @@ function unknown(node_) {
   throw new Error("Cannot compile unknown node `" + node.type + "`");
 }
 
-// node_modules/hast-util-to-html/lib/index.js
+// ../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html/lib/index.js
 var emptyOptions = {};
 var emptyCharacterReferences = {};
 var emptyChildren2 = [];
@@ -2915,7 +2927,7 @@ function all(parent) {
   return results.join("");
 }
 
-// node_modules/roughjs/bundled/rough.esm.js
+// ../../node_modules/.pnpm/roughjs@4.6.6/node_modules/roughjs/bundled/rough.esm.js
 function t(t4, e4, s4) {
   if (t4 && t4.length) {
     const [n4, o4] = e4, a4 = Math.PI / 180 * s4, h4 = Math.cos(a4), r4 = Math.sin(a4);
@@ -3271,23 +3283,23 @@ function w(t4, e4, s4) {
 function x(t4, e4, s4, n4, o4, a4, h4, r4, i4, c4) {
   const l4 = (u5 = h4, Math.PI * u5 / 180);
   var u5;
-  let p5 = [], f5 = 0, d4 = 0, g4 = 0, M4 = 0;
-  if (c4) [f5, d4, g4, M4] = c4;
+  let p5 = [], f5 = 0, d4 = 0, g4 = 0, M3 = 0;
+  if (c4) [f5, d4, g4, M3] = c4;
   else {
     [t4, e4] = w(t4, e4, -l4), [s4, n4] = w(s4, n4, -l4);
     const h5 = (t4 - s4) / 2, c5 = (e4 - n4) / 2;
     let u6 = h5 * h5 / (o4 * o4) + c5 * c5 / (a4 * a4);
     u6 > 1 && (u6 = Math.sqrt(u6), o4 *= u6, a4 *= u6);
-    const p6 = o4 * o4, k5 = a4 * a4, b4 = p6 * k5 - p6 * c5 * c5 - k5 * h5 * h5, y5 = p6 * c5 * c5 + k5 * h5 * h5, m5 = (r4 === i4 ? -1 : 1) * Math.sqrt(Math.abs(b4 / y5));
-    g4 = m5 * o4 * c5 / a4 + (t4 + s4) / 2, M4 = m5 * -a4 * h5 / o4 + (e4 + n4) / 2, f5 = Math.asin(parseFloat(((e4 - M4) / a4).toFixed(9))), d4 = Math.asin(parseFloat(((n4 - M4) / a4).toFixed(9))), t4 < g4 && (f5 = Math.PI - f5), s4 < g4 && (d4 = Math.PI - d4), f5 < 0 && (f5 = 2 * Math.PI + f5), d4 < 0 && (d4 = 2 * Math.PI + d4), i4 && f5 > d4 && (f5 -= 2 * Math.PI), !i4 && d4 > f5 && (d4 -= 2 * Math.PI);
+    const p6 = o4 * o4, k4 = a4 * a4, b5 = p6 * k4 - p6 * c5 * c5 - k4 * h5 * h5, y5 = p6 * c5 * c5 + k4 * h5 * h5, m5 = (r4 === i4 ? -1 : 1) * Math.sqrt(Math.abs(b5 / y5));
+    g4 = m5 * o4 * c5 / a4 + (t4 + s4) / 2, M3 = m5 * -a4 * h5 / o4 + (e4 + n4) / 2, f5 = Math.asin(parseFloat(((e4 - M3) / a4).toFixed(9))), d4 = Math.asin(parseFloat(((n4 - M3) / a4).toFixed(9))), t4 < g4 && (f5 = Math.PI - f5), s4 < g4 && (d4 = Math.PI - d4), f5 < 0 && (f5 = 2 * Math.PI + f5), d4 < 0 && (d4 = 2 * Math.PI + d4), i4 && f5 > d4 && (f5 -= 2 * Math.PI), !i4 && d4 > f5 && (d4 -= 2 * Math.PI);
   }
-  let k4 = d4 - f5;
-  if (Math.abs(k4) > 120 * Math.PI / 180) {
+  let k3 = d4 - f5;
+  if (Math.abs(k3) > 120 * Math.PI / 180) {
     const t5 = d4, e5 = s4, r5 = n4;
-    d4 = i4 && d4 > f5 ? f5 + 120 * Math.PI / 180 * 1 : f5 + 120 * Math.PI / 180 * -1, p5 = x(s4 = g4 + o4 * Math.cos(d4), n4 = M4 + a4 * Math.sin(d4), e5, r5, o4, a4, h4, 0, i4, [d4, t5, g4, M4]);
+    d4 = i4 && d4 > f5 ? f5 + 120 * Math.PI / 180 * 1 : f5 + 120 * Math.PI / 180 * -1, p5 = x(s4 = g4 + o4 * Math.cos(d4), n4 = M3 + a4 * Math.sin(d4), e5, r5, o4, a4, h4, 0, i4, [d4, t5, g4, M3]);
   }
-  k4 = d4 - f5;
-  const b3 = Math.cos(f5), y4 = Math.sin(f5), m4 = Math.cos(d4), P4 = Math.sin(d4), v4 = Math.tan(k4 / 4), S4 = 4 / 3 * o4 * v4, O4 = 4 / 3 * a4 * v4, L4 = [t4, e4], T4 = [t4 + S4 * y4, e4 - O4 * b3], D4 = [s4 + S4 * P4, n4 - O4 * m4], A4 = [s4, n4];
+  k3 = d4 - f5;
+  const b4 = Math.cos(f5), y4 = Math.sin(f5), m4 = Math.cos(d4), P4 = Math.sin(d4), v4 = Math.tan(k3 / 4), S4 = 4 / 3 * o4 * v4, O4 = 4 / 3 * a4 * v4, L4 = [t4, e4], T4 = [t4 + S4 * y4, e4 - O4 * b4], D4 = [s4 + S4 * P4, n4 - O4 * m4], A4 = [s4, n4];
   if (T4[0] = 2 * L4[0] - T4[0], T4[1] = 2 * L4[1] - T4[1], c4) return [T4, D4, A4].concat(p5);
   {
     p5 = [T4, D4, A4].concat(p5);
@@ -3363,12 +3375,12 @@ function A(t4, e4, s4, n4, o4, a4, h4, r4, i4) {
   let f5 = o4, d4 = a4;
   for (; f5 < 0; ) f5 += 2 * Math.PI, d4 += 2 * Math.PI;
   d4 - f5 > 2 * Math.PI && (f5 = 0, d4 = 2 * Math.PI);
-  const g4 = 2 * Math.PI / i4.curveStepCount, M4 = Math.min(g4 / 2, (d4 - f5) / 2), k4 = V(M4, c4, l4, u5, p5, f5, d4, 1, i4);
+  const g4 = 2 * Math.PI / i4.curveStepCount, M3 = Math.min(g4 / 2, (d4 - f5) / 2), k3 = V(M3, c4, l4, u5, p5, f5, d4, 1, i4);
   if (!i4.disableMultiStroke) {
-    const t5 = V(M4, c4, l4, u5, p5, f5, d4, 1.5, i4);
-    k4.push(...t5);
+    const t5 = V(M3, c4, l4, u5, p5, f5, d4, 1.5, i4);
+    k3.push(...t5);
   }
-  return h4 && (r4 ? k4.push(...$(c4, l4, c4 + u5 * Math.cos(f5), l4 + p5 * Math.sin(f5), i4), ...$(c4, l4, c4 + u5 * Math.cos(d4), l4 + p5 * Math.sin(d4), i4)) : k4.push({ op: "lineTo", data: [c4, l4] }, { op: "lineTo", data: [c4 + u5 * Math.cos(f5), l4 + p5 * Math.sin(f5)] })), { type: "path", ops: k4 };
+  return h4 && (r4 ? k3.push(...$(c4, l4, c4 + u5 * Math.cos(f5), l4 + p5 * Math.sin(f5), i4), ...$(c4, l4, c4 + u5 * Math.cos(d4), l4 + p5 * Math.sin(d4), i4)) : k3.push({ op: "lineTo", data: [c4, l4] }, { op: "lineTo", data: [c4 + u5 * Math.cos(f5), l4 + p5 * Math.sin(f5)] })), { type: "path", ops: k3 };
 }
 function _(t4, e4) {
   const s4 = m(y(b(t4))), n4 = [];
@@ -3454,8 +3466,8 @@ function R(t4, e4, s4, n4, o4, a4, h4) {
   const u5 = l4 / 2, p5 = 0.2 + 0.2 * W(o4);
   let f5 = o4.bowing * o4.maxRandomnessOffset * (n4 - e4) / 200, d4 = o4.bowing * o4.maxRandomnessOffset * (t4 - s4) / 200;
   f5 = G(f5, o4, c4), d4 = G(d4, o4, c4);
-  const g4 = [], M4 = () => G(u5, o4, c4), k4 = () => G(l4, o4, c4), b3 = o4.preserveVertices;
-  return (h4 ? g4.push({ op: "move", data: [t4 + (b3 ? 0 : M4()), e4 + (b3 ? 0 : M4())] }) : g4.push({ op: "move", data: [t4 + (b3 ? 0 : G(l4, o4, c4)), e4 + (b3 ? 0 : G(l4, o4, c4))] })), h4 ? g4.push({ op: "bcurveTo", data: [f5 + t4 + (s4 - t4) * p5 + M4(), d4 + e4 + (n4 - e4) * p5 + M4(), f5 + t4 + 2 * (s4 - t4) * p5 + M4(), d4 + e4 + 2 * (n4 - e4) * p5 + M4(), s4 + (b3 ? 0 : M4()), n4 + (b3 ? 0 : M4())] }) : g4.push({ op: "bcurveTo", data: [f5 + t4 + (s4 - t4) * p5 + k4(), d4 + e4 + (n4 - e4) * p5 + k4(), f5 + t4 + 2 * (s4 - t4) * p5 + k4(), d4 + e4 + 2 * (n4 - e4) * p5 + k4(), s4 + (b3 ? 0 : k4()), n4 + (b3 ? 0 : k4())] }), g4;
+  const g4 = [], M3 = () => G(u5, o4, c4), k3 = () => G(l4, o4, c4), b4 = o4.preserveVertices;
+  return (h4 ? g4.push({ op: "move", data: [t4 + (b4 ? 0 : M3()), e4 + (b4 ? 0 : M3())] }) : g4.push({ op: "move", data: [t4 + (b4 ? 0 : G(l4, o4, c4)), e4 + (b4 ? 0 : G(l4, o4, c4))] })), h4 ? g4.push({ op: "bcurveTo", data: [f5 + t4 + (s4 - t4) * p5 + M3(), d4 + e4 + (n4 - e4) * p5 + M3(), f5 + t4 + 2 * (s4 - t4) * p5 + M3(), d4 + e4 + 2 * (n4 - e4) * p5 + M3(), s4 + (b4 ? 0 : M3()), n4 + (b4 ? 0 : M3())] }) : g4.push({ op: "bcurveTo", data: [f5 + t4 + (s4 - t4) * p5 + k3(), d4 + e4 + (n4 - e4) * p5 + k3(), f5 + t4 + 2 * (s4 - t4) * p5 + k3(), d4 + e4 + 2 * (n4 - e4) * p5 + k3(), s4 + (b4 ? 0 : k3()), n4 + (b4 ? 0 : k3())] }), g4;
 }
 function j(t4, e4, s4) {
   if (!t4.length) return [];
@@ -3918,7 +3930,7 @@ var ot = class {
 };
 var at = { canvas: (t4, e4) => new st(t4, e4), svg: (t4, e4) => new ot(t4, e4), generator: (t4) => new et(t4), newSeed: () => et.newSeed() };
 
-// node_modules/perfect-freehand/dist/esm/index.mjs
+// ../../node_modules/.pnpm/perfect-freehand@1.2.3/node_modules/perfect-freehand/dist/esm/index.mjs
 var { PI: e2 } = Math;
 var t2 = e2 + 1e-4;
 var n2 = 0.5;
@@ -4034,37 +4046,37 @@ function re2(e4, t4, n4) {
   }, e4[0].pressure);
 }
 function P2(e4, n4 = {}) {
-  let { size: r4 = 16, smoothing: a4 = 0.5, thinning: f5 = 0.5, simulatePressure: m4 = true, easing: _3 = (e5) => e5, start: v4 = {}, end: b3 = {}, last: x4 = false } = n4, { cap: S4 = true, easing: w4 = (e5) => e5 * (2 - e5) } = v4, { cap: T4 = true, easing: P4 = (e5) => --e5 * e5 * e5 + 1 } = b3;
+  let { size: r4 = 16, smoothing: a4 = 0.5, thinning: f5 = 0.5, simulatePressure: m4 = true, easing: _4 = (e5) => e5, start: v4 = {}, end: b4 = {}, last: x4 = false } = n4, { cap: S4 = true, easing: w4 = (e5) => e5 * (2 - e5) } = v4, { cap: T4 = true, easing: P4 = (e5) => --e5 * e5 * e5 + 1 } = b4;
   if (e4.length === 0 || r4 <= 0) return [];
-  let F4 = e4[e4.length - 1].runningLength, I4 = N2(v4.taper, r4, F4), L4 = N2(b3.taper, r4, F4), R3 = (r4 * a4) ** 2, z3 = [], B3 = [], V3 = re2(e4, m4, r4), H2 = i2(r4, f5, e4[e4.length - 1].pressure, _3), U2, W2 = e4[0].vector, G2 = e4[0].point, K2 = G2, q3 = G2, J2 = K2, Y2 = false;
+  let F3 = e4[e4.length - 1].runningLength, I4 = N2(v4.taper, r4, F3), L4 = N2(b4.taper, r4, F3), R3 = (r4 * a4) ** 2, z3 = [], B3 = [], V3 = re2(e4, m4, r4), H3 = i2(r4, f5, e4[e4.length - 1].pressure, _4), U2, W2 = e4[0].vector, G3 = e4[0].point, K3 = G3, q3 = G3, J3 = K3, Y2 = false;
   for (let n5 = 0; n5 < e4.length; n5++) {
-    let { pressure: a5 } = e4[n5], { point: s4, vector: h4, distance: v5, runningLength: b4 } = e4[n5], x5 = n5 === e4.length - 1;
-    if (!x5 && F4 - b4 < 3) continue;
-    f5 ? (m4 && (a5 = o2(V3, v5, r4)), H2 = i2(r4, f5, a5, _3)) : H2 = r4 / 2, U2 === void 0 && (U2 = H2);
-    let S5 = b4 < I4 ? w4(b4 / I4) : 1, T5 = F4 - b4 < L4 ? P4((F4 - b4) / L4) : 1;
-    H2 = Math.max(0.01, H2 * Math.min(S5, T5));
-    let k4 = (x5 ? e4[n5] : e4[n5 + 1]).vector, A4 = x5 ? 1 : ee(h4, k4), j4 = ee(h4, W2) < 0 && !Y2, M4 = A4 !== null && A4 < 0;
-    if (j4 || M4) {
-      g2(E2, W2), p3(E2, E2, H2);
-      for (let e5 = 0; e5 <= 1; e5 += 0.07692307692307693) d2(D2, s4, E2), C2(D2, D2, s4, t2 * e5), q3 = [D2[0], D2[1]], z3.push(q3), l2(O2, s4, E2), C2(O2, O2, s4, t2 * -e5), J2 = [O2[0], O2[1]], B3.push(J2);
-      G2 = q3, K2 = J2, M4 && (Y2 = true);
+    let { pressure: a5 } = e4[n5], { point: s4, vector: h4, distance: v5, runningLength: b5 } = e4[n5], x5 = n5 === e4.length - 1;
+    if (!x5 && F3 - b5 < 3) continue;
+    f5 ? (m4 && (a5 = o2(V3, v5, r4)), H3 = i2(r4, f5, a5, _4)) : H3 = r4 / 2, U2 === void 0 && (U2 = H3);
+    let S5 = b5 < I4 ? w4(b5 / I4) : 1, T5 = F3 - b5 < L4 ? P4((F3 - b5) / L4) : 1;
+    H3 = Math.max(0.01, H3 * Math.min(S5, T5));
+    let k3 = (x5 ? e4[n5] : e4[n5 + 1]).vector, A4 = x5 ? 1 : ee(h4, k3), j4 = ee(h4, W2) < 0 && !Y2, M3 = A4 !== null && A4 < 0;
+    if (j4 || M3) {
+      g2(E2, W2), p3(E2, E2, H3);
+      for (let e5 = 0; e5 <= 1; e5 += 0.07692307692307693) d2(D2, s4, E2), C2(D2, D2, s4, t2 * e5), q3 = [D2[0], D2[1]], z3.push(q3), l2(O2, s4, E2), C2(O2, O2, s4, t2 * -e5), J3 = [O2[0], O2[1]], B3.push(J3);
+      G3 = q3, K3 = J3, M3 && (Y2 = true);
       continue;
     }
     if (Y2 = false, x5) {
-      g2(E2, h4), p3(E2, E2, H2), z3.push(u2(s4, E2)), B3.push(c2(s4, E2));
+      g2(E2, h4), p3(E2, E2, H3), z3.push(u2(s4, E2)), B3.push(c2(s4, E2));
       continue;
     }
-    te(E2, k4, h4, A4), g2(E2, E2), p3(E2, E2, H2), d2(D2, s4, E2), q3 = [D2[0], D2[1]], (n5 <= 1 || y2(G2, q3) > R3) && (z3.push(q3), G2 = q3), l2(O2, s4, E2), J2 = [O2[0], O2[1]], (n5 <= 1 || y2(K2, J2) > R3) && (B3.push(J2), K2 = J2), V3 = a5, W2 = h4;
+    te(E2, k3, h4, A4), g2(E2, E2), p3(E2, E2, H3), d2(D2, s4, E2), q3 = [D2[0], D2[1]], (n5 <= 1 || y2(G3, q3) > R3) && (z3.push(q3), G3 = q3), l2(O2, s4, E2), J3 = [O2[0], O2[1]], (n5 <= 1 || y2(K3, J3) > R3) && (B3.push(J3), K3 = J3), V3 = a5, W2 = h4;
   }
-  let X2 = [e4[0].point[0], e4[0].point[1]], Z2 = e4.length > 1 ? [e4[e4.length - 1].point[0], e4[e4.length - 1].point[1]] : c2(e4[0].point, [1, 1]), Q2 = [], $3 = [];
+  let X2 = [e4[0].point[0], e4[0].point[1]], Z2 = e4.length > 1 ? [e4[e4.length - 1].point[0], e4[e4.length - 1].point[1]] : c2(e4[0].point, [1, 1]), Q3 = [], $3 = [];
   if (e4.length === 1) {
-    if (!(I4 || L4) || x4) return k2(X2, U2 || H2);
+    if (!(I4 || L4) || x4) return k2(X2, U2 || H3);
   } else {
-    I4 || L4 && e4.length === 1 || (S4 ? Q2.push(...A2(X2, B3[0], 13)) : Q2.push(...j2(X2, z3[0], B3[0])));
+    I4 || L4 && e4.length === 1 || (S4 ? Q3.push(...A2(X2, B3[0], 13)) : Q3.push(...j2(X2, z3[0], B3[0])));
     let t4 = h2(s2(e4[e4.length - 1].vector));
-    L4 || I4 && e4.length === 1 ? $3.push(Z2) : T4 ? $3.push(...M2(Z2, t4, H2, 29)) : $3.push(...ne(Z2, t4, H2));
+    L4 || I4 && e4.length === 1 ? $3.push(Z2) : T4 ? $3.push(...M2(Z2, t4, H3, 29)) : $3.push(...ne(Z2, t4, H3));
   }
-  return z3.concat($3, B3.reverse(), Q2);
+  return z3.concat($3, B3.reverse(), Q3);
 }
 var F2 = [0, 0];
 function I2(e4) {
@@ -4590,15 +4602,15 @@ var excalidraw_inline_default = `function B(){let n=document.querySelector(".pag
 `;
 var l3;
 l3 = { __e: function(n4, l4, u5, t4) {
-  for (var i4, o4, r4; l4 = l4.__; ) if ((i4 = l4.__c) && !i4.__) try {
-    if ((o4 = i4.constructor) && null != o4.getDerivedStateFromError && (i4.setState(o4.getDerivedStateFromError(n4)), r4 = i4.__d), null != i4.componentDidCatch && (i4.componentDidCatch(n4, t4 || {}), r4 = i4.__d), r4) return i4.__E = i4;
+  for (var i4, r4, o4; l4 = l4.__; ) if ((i4 = l4.__c) && !i4.__) try {
+    if ((r4 = i4.constructor) && null != r4.getDerivedStateFromError && (i4.setState(r4.getDerivedStateFromError(n4)), o4 = i4.__d), null != i4.componentDidCatch && (i4.componentDidCatch(n4, t4 || {}), o4 = i4.__d), o4) return i4.__E = i4;
   } catch (l5) {
     n4 = l5;
   }
   throw n4;
-} }, "function" == typeof Promise ? Promise.prototype.then.bind(Promise.resolve()) : setTimeout;
+} }, "function" == typeof Promise ? Promise.prototype.then.bind(Promise.resolve()) : setTimeout, Math.random().toString(8);
 
-// node_modules/preact/jsx-runtime/dist/jsxRuntime.mjs
+// ../../node_modules/.pnpm/preact@10.29.7_preact-render-to-string@6.7.0/node_modules/preact/jsx-runtime/dist/jsxRuntime.mjs
 var f4 = 0;
 function u4(e4, t4, n4, o4, i4, u5) {
   t4 || (t4 = {});

@@ -34,10 +34,19 @@ function initPanZoom(page) {
   const container = page.querySelector(".excalidraw-container");
   if (!container) return;
 
+  const drawingPage = page.matches(".excalidraw-page")
+    ? page
+    : page.querySelector(".excalidraw-page")
+
+  const enableInteraction = drawingPage?.dataset.enableInteraction !== "false";
+
   const svg = container.querySelector("svg");
   if (!svg) return;
 
   container.style.backgroundColor = "var(--excalidraw-bg, var(--light))";
+  container.style.pointerEvents = enableInteraction ? "auto" : "none";
+  container.style.touchAction = enableInteraction ? "none" : "auto";
+  container.style.cursor = enableInteraction ? "grab" : "default";
 
   var overlaysContainer = page.querySelector(".excalidraw-overlays");
 
@@ -49,6 +58,7 @@ function initPanZoom(page) {
   let startY = 0;
 
   function positionOverlays() {
+    if (!enableInteraction) return;
     if (!overlaysContainer) return;
     var overlays = overlaysContainer.querySelectorAll(".excalidraw-overlay");
     if (overlays.length === 0) return;

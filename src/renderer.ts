@@ -351,7 +351,7 @@ function renderLinearElement(el: ExcalidrawElement): string {
 
 function renderArrowheads(el: ExcalidrawElement, points: Array<[number, number]>): string {
   let svg = "";
-  const color = el.strokeColor === "transparent" ? "none" : el.strokeColor;
+  const color = el.strokeColor === "transparent" ? "none" : themeColor(el.strokeColor);
 
   if (el.endArrowhead && el.endArrowhead !== "none" && points.length >= 2) {
     const tip = points[points.length - 1]!;

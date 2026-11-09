@@ -68,8 +68,7 @@
   },
   "dependencies": {
     "@quartz-community/types": "^1.0.0",
-    "@quartz-community/utils": "^1.0.0",
-    "github-slugger": "^2.0.0",
+    "@quartz-community/utils": "^1.1.1",
     "lz-string": "^1.5.0",
     "perfect-freehand": "^1.2.2",
     "roughjs": "^4.6.6"

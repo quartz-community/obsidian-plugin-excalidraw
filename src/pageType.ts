@@ -1,4 +1,5 @@
 import type {
+  FilePath,
   QuartzPageTypePlugin,
   PageMatcher,
   FullSlug,
@@ -6,7 +7,7 @@ import type {
   ProcessedContent,
   BuildCtx,
 } from "@quartz-community/types";
-import { slugifyFilePath } from "@quartz-community/utils/path";
+import { joinSegments, slugifyFilePath } from "@quartz-community/utils/path";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { parseExcalidraw } from "./parser";
@@ -73,6 +74,12 @@ export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts
         slug,
         title: baseName,
         data: {
+          // The page stands for the drawing file: give it the source paths Quartz's parser
+          // sets on notes (instead of the synthetic `<slug>.md`), so bases list it as that
+          // file (file.ext "excalidraw", or "md" for a drawing stored as Markdown), and
+          // folder listings and the content index see its real path.
+          filePath: joinSegments(ctx.argv.directory, filePath) as FilePath,
+          relativePath: filePath as FilePath,
           frontmatter: { title: baseName, tags: ["excalidraw"] },
           excalidrawData: data,
           excalidrawOptions: opts,

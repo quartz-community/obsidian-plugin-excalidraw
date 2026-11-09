@@ -5,31 +5,28 @@ A page type plugin that renders [Obsidian Excalidraw](https://github.com/zsviczi
 ## Installation
 
 ```bash
-npx quartz plugin add github:quartz-community/obsidian-plugin-excalidraw
+npx quartz plugin add @quartz-community/obsidian-plugin-excalidraw
 ```
 
 ## Usage
 
 ```yaml title="quartz.config.yaml"
 plugins:
-  - source: github:quartz-community/obsidian-plugin-excalidraw
+  - source: "@quartz-community/obsidian-plugin-excalidraw"
     enabled: true
     options:
       enableInteraction: true
-      darkMode: "auto"
+      darkMode: auto
       exportPadding: 20
 ```
 
-For advanced use cases, you can override in TypeScript:
+A drawing gets a page at its file's path (`Drawings/Plan.excalidraw.md` → `/Drawings/Plan.excalidraw`), using a full-page frame of its own (`excalidraw`). To use the standard three-column layout instead:
 
-```ts title="quartz.ts (override)"
-import * as ExternalPlugin from "./.quartz/plugins";
-
-ExternalPlugin.ExcalidrawPage({
-  enableInteraction: true,
-  darkMode: "auto",
-  exportPadding: 20,
-});
+```yaml title="quartz.config.yaml"
+layout:
+  byPageType:
+    excalidraw:
+      template: default
 ```
 
 ## Features
@@ -45,15 +42,15 @@ ExternalPlugin.ExcalidrawPage({
 - **Pan and zoom**: Mouse drag to pan, scroll wheel to zoom, with zoom in/out/reset buttons.
 - **Full-viewport layout**: Dedicated page frame with toggleable sidebar (matching canvas-page pattern).
 - **Compressed JSON**: Supports both `json` and `compressed-json` (LZ-String) formats from the Obsidian Excalidraw plugin.
-- **Filter integration**: Prevents `.excalidraw.md` files from being double-processed as regular Markdown pages.
+- **Filter integration**: Prevents `.excalidraw.md` files from being double-processed as regular Markdown pages. A drawing stored as Markdown keeps its frontmatter, so `publish`, `draft`, `password` and other filters apply to it as to a note (Quartz 5.1+).
 
 ## Configuration
 
-| Option              | Type      | Default  | Description                                                |
-| ------------------- | --------- | -------- | ---------------------------------------------------------- |
-| `enableInteraction` | `boolean` | `true`   | Whether to enable pan and zoom interaction on the drawing. |
-| `darkMode`          | `string`  | `"auto"` | Theme mode: `"auto"`, `"light"`, or `"dark"`.              |
-| `exportPadding`     | `number`  | `20`     | Padding around the drawing content in pixels.              |
+| Option              | Type      | Default  | Description                                                                                      |
+| ------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `enableInteraction` | `boolean` | `true`   | Whether to enable pan and zoom interaction on the drawing.                                       |
+| `darkMode`          | `string`  | `"auto"` | `"auto"` follows the site's light/dark mode; `"light"` or `"dark"` fix the drawing's background. |
+| `exportPadding`     | `number`  | `20`     | Padding around the drawing content in pixels.                                                    |
 
 ## Supported file formats
 
@@ -64,6 +61,10 @@ The primary format produced by the [Obsidian Excalidraw plugin](https://github.c
 ### `.excalidraw` (Pure JSON)
 
 Standard Excalidraw JSON format with `type`, `version`, `elements`, `appState`, and `files` fields.
+
+## Documentation
+
+See the [Quartz documentation](https://quartz.jzhao.xyz/plugins/ObsidianPluginExcalidraw) for more information.
 
 ## License
 

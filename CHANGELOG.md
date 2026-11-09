@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- 5862c1c: Excalidraw pages now carry the path of their drawing file (`filePath` / `relativePath`) instead of a made-up `<name>.excalidraw.md`. Base views (bases-page) list drawings with `file.path`, `file.ext` (`excalidraw`, or `md` for a drawing stored as `.excalidraw.md`), `file.folder` and `file.inFolder()` as Obsidian does, the content index records the real file path, and drawing pages get their generated social image.
+- 81f33ed: Bundles `@quartz-community/utils` 1.1.0: a short wikilink to an Obsidian folder note (`[[Topic]]` for `Topic/Topic.md`) reaches the folder page, and anchors to headings use the same slug as heading ids. `github-slugger` is no longer a dependency of this plugin.
+
 ## 1.0.1
 
 ### Patch Changes

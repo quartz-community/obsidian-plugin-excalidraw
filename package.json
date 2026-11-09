@@ -1,6 +1,6 @@
 {
   "name": "@quartz-community/obsidian-plugin-excalidraw",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Excalidraw page type plugin for Quartz v5. Renders Obsidian Excalidraw drawings as interactive SVG pages.",
   "type": "module",
   "license": "MIT",

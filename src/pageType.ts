@@ -18,6 +18,24 @@ const excalidrawMatcher: PageMatcher = ({ fileData }) => {
   return "excalidrawData" in fileData;
 };
 
+const isDrawing = (path: string) => path.endsWith(".excalidraw.md") || path.endsWith(".excalidraw");
+
+// A drawing stored as Markdown is parsed as a note first, so it has frontmatter (`publish`,
+// `draft`, `password`, …). This plugin's filter takes the note out of the content (the drawing
+// gets its own page instead) and keeps its frontmatter for that page, so the site's filters and
+// encryption see it as they see notes. A drawing note an earlier filter rejected never reaches
+// this filter, and gets no page. Module state: Quartz instantiates the plugin once per category
+// (filter, page type). Kept per build (ctx.buildId), as the filters run again on every rebuild.
+let drawingNotesBuild: string | undefined;
+const drawingNotes = new Map<string, Record<string, unknown>>();
+function drawingNotesOf(ctx: BuildCtx): Map<string, Record<string, unknown>> {
+  if (drawingNotesBuild !== ctx.buildId) {
+    drawingNotesBuild = ctx.buildId;
+    drawingNotes.clear();
+  }
+  return drawingNotes;
+}
+
 export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts) => ({
   name: "ExcalidrawPage",
   priority: 25,
@@ -25,15 +43,14 @@ export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts
   match: excalidrawMatcher,
 
   generate({ ctx }) {
-    const excalidrawFiles = ctx.allFiles.filter(
-      (fp: string) => fp.endsWith(".excalidraw.md") || fp.endsWith(".excalidraw"),
-    );
+    const excalidrawFiles = ctx.allFiles.filter(isDrawing);
 
     const imageFiles = ctx.allFiles.filter((fp: string) =>
       /\.(png|jpe?g|gif|svg|webp|avif|bmp|ico)$/i.test(fp),
     );
 
     const virtualPages: VirtualPage[] = [];
+    const notes = drawingNotesOf(ctx);
 
     for (const filePath of excalidrawFiles) {
       const fullPath = join(ctx.argv.directory, filePath);
@@ -43,6 +60,10 @@ export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts
       } catch {
         continue;
       }
+
+      const isNote = filePath.endsWith(".md");
+      const noteFrontmatter = isNote ? notes.get(filePath) : undefined;
+      if (isNote && !noteFrontmatter) continue;
 
       const data = parseExcalidraw(content, filePath);
       if (!data) continue;
@@ -80,7 +101,7 @@ export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts
           // folder listings and the content index see its real path.
           filePath: joinSegments(ctx.argv.directory, filePath) as FilePath,
           relativePath: filePath as FilePath,
-          frontmatter: { title: baseName, tags: ["excalidraw"] },
+          frontmatter: { ...noteFrontmatter, title: baseName, tags: ["excalidraw"] },
           excalidrawData: data,
           excalidrawOptions: opts,
           excalidrawImagePaths: resolvedImagePaths,
@@ -91,12 +112,14 @@ export const ExcalidrawPage: QuartzPageTypePlugin<ExcalidrawPageOptions> = (opts
     return virtualPages;
   },
 
-  shouldPublish(_ctx: BuildCtx, content: ProcessedContent) {
-    const relativePath = content[1].data.relativePath ?? "";
-    if (relativePath.endsWith(".excalidraw.md") || relativePath.endsWith(".excalidraw")) {
-      return false;
-    }
-    return true;
+  shouldPublish(ctx: BuildCtx, content: ProcessedContent) {
+    const data = content[1].data;
+    // this plugin's own pages (Quartz 5.1+ runs the filters on pages that stand for files)
+    if ("excalidrawData" in data) return true;
+    const relativePath = data.relativePath ?? "";
+    if (!isDrawing(relativePath)) return true;
+    drawingNotesOf(ctx).set(relativePath, { ...(data.frontmatter ?? {}) });
+    return false;
   },
 
   layout: "excalidraw",

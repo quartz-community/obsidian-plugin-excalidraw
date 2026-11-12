@@ -168,20 +168,23 @@ export default ((userOpts?: ExcalidrawPageOptions) => {
     return (
       <article
         class="excalidraw-page"
+        data-enable-interaction={options.enableInteraction !== false}
         role="img"
         aria-label={fileData.frontmatter?.title ?? "Excalidraw drawing"}
       >
-        <div class="excalidraw-controls">
-          <button class="excalidraw-zoom-in" type="button" aria-label="Zoom in">
-            +
-          </button>
-          <button class="excalidraw-zoom-out" type="button" aria-label="Zoom out">
-            −
-          </button>
-          <button class="excalidraw-reset" type="button" aria-label="Reset view">
-            ⟲
-          </button>
-        </div>
+        {options.enableInteraction !== false && (
+          <div class="excalidraw-controls">
+            <button class="excalidraw-zoom-in" type="button" aria-label="Zoom in">
+              +
+            </button>
+            <button class="excalidraw-zoom-out" type="button" aria-label="Zoom out">
+              −
+            </button>
+            <button class="excalidraw-reset" type="button" aria-label="Reset view">
+              ⟲
+            </button>
+          </div>
+        )}
         <div class="excalidraw-container" dangerouslySetInnerHTML={{ __html: result.svg }} />
         <div
           class="excalidraw-overlays"

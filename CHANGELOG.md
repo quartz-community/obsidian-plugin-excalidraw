@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.4
+
+### Patch Changes
+
+- 47ff2ae: Bundles utils 1.3.1: `slugs.stripDiacritics` now strips accents from Latin letters only and writes ł, ø, ß, æ … in ASCII; other scripts are left as written.
+
 ## 1.1.3
 
 ### Patch Changes

@@ -21,11 +21,16 @@ function initSidebar(page) {
   const toggle = page.querySelector(".excalidraw-sidebar-toggle");
   if (!toggle) return;
 
-  toggle.addEventListener("click", () => {
+  function handleToggle() {
     page.classList.toggle("excalidraw-sidebar-open");
-  });
+  }
 
+  toggle.addEventListener("click", handleToggle);
+
+  // SPA navigation can keep the same toggle element (the DOM is morphed, not replaced),
+  // so the listener must go too: two listeners toggle twice and the click does nothing.
   window.addCleanup(() => {
+    toggle.removeEventListener("click", handleToggle);
     page.classList.remove("excalidraw-sidebar-open");
   });
 }
@@ -121,28 +126,26 @@ function initPanZoom(page) {
   var zoomOutBtn = page.querySelector(".excalidraw-zoom-out");
   var resetBtn = page.querySelector(".excalidraw-reset");
 
-  if (zoomInBtn) {
-    zoomInBtn.addEventListener("click", function () {
-      zoom = Math.min(MAX_ZOOM, zoom + ZOOM_STEP);
-      applyTransform();
-    });
+  function handleZoomIn() {
+    zoom = Math.min(MAX_ZOOM, zoom + ZOOM_STEP);
+    applyTransform();
   }
 
-  if (zoomOutBtn) {
-    zoomOutBtn.addEventListener("click", function () {
-      zoom = Math.max(MIN_ZOOM, zoom - ZOOM_STEP);
-      applyTransform();
-    });
+  function handleZoomOut() {
+    zoom = Math.max(MIN_ZOOM, zoom - ZOOM_STEP);
+    applyTransform();
   }
 
-  if (resetBtn) {
-    resetBtn.addEventListener("click", function () {
-      zoom = 1;
-      panX = 0;
-      panY = 0;
-      applyTransform();
-    });
+  function handleReset() {
+    zoom = 1;
+    panX = 0;
+    panY = 0;
+    applyTransform();
   }
+
+  if (zoomInBtn) zoomInBtn.addEventListener("click", handleZoomIn);
+  if (zoomOutBtn) zoomOutBtn.addEventListener("click", handleZoomOut);
+  if (resetBtn) resetBtn.addEventListener("click", handleReset);
 
   var lastTouchDist = 0;
 
@@ -197,6 +200,9 @@ function initPanZoom(page) {
     container.removeEventListener("touchstart", handleTouchStart);
     container.removeEventListener("touchmove", handleTouchMove);
     container.removeEventListener("touchend", handleTouchEnd);
+    if (zoomInBtn) zoomInBtn.removeEventListener("click", handleZoomIn);
+    if (zoomOutBtn) zoomOutBtn.removeEventListener("click", handleZoomOut);
+    if (resetBtn) resetBtn.removeEventListener("click", handleReset);
   });
 }
 
